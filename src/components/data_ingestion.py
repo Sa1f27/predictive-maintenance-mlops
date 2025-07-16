@@ -27,7 +27,7 @@ class DataIngestion:
     def start_data_ingestion(self):
         logging.info("Staring to load the dataset")
         try:
-            df = pd.read_csv('/Users/abhi/Desktop/End to End ML/Notebook[EDA-Model]/Data/predictive_maintenance.csv')
+            df = pd.read_csv(r'Notebook[EDA-Model]\Data\predictive_maintenance.csv')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
 
@@ -35,7 +35,7 @@ class DataIngestion:
 
             logging.info("Initiated training and testing splitting")
 
-            train_set, test_set = train_test_split(df, test_size=0.2, random_state=2)
+            train_set, test_set = train_test_split(df, test_size=0.25, random_state=41)
 
             train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)

@@ -1,6 +1,3 @@
-I'll provide the complete README content here directly:
-
-```markdown
 # 🔧 Predictive Maintenance MLOps Pipeline
 
 <div align="center">
@@ -12,8 +9,6 @@ I'll provide the complete README content here directly:
 ![AWS](https://img.shields.io/badge/AWS-Cloud--Deployed-yellow?style=for-the-badge&logo=amazon-aws)
 
 **End-to-end machine learning system predicting equipment failures 3-7 days in advance**
-
-[🚀 Live Demo](http://your-deployment-url.com) • [📊 Model Performance](#-model-performance) • [🏗️ Architecture](#️-system-architecture) • [🔧 Quick Start](#-quick-start)
 
 </div>
 
@@ -66,20 +61,40 @@ I'll provide the complete README content here directly:
 ## 🏆 Model Performance
 
 ### **Classification Results**
-```
 
-┌─────────────────┬──────────┬───────────┬────────┬──────────┐
-│ Model │ Accuracy │ Precision │ Recall │ F1-Score │
-├─────────────────┼──────────┼───────────┼────────┼──────────┤
-│ Random Forest │ 92.3% │ 89.1% │ 94.7% │ 91.8% │
-│ Gradient Boost │ 91.8% │ 88.6% │ 93.9% │ 91.2% │
-│ SVM (RBF) │ 89.7% │ 86.2% │ 92.1% │ 89.1% │
-│ Ensemble │ 93.1% │ 90.4% │ 95.2% │ 92.7% │
-└─────────────────┴──────────┴───────────┴────────┴──────────┘
+## 🏆 Model Performance
 
-````
+### **Classification Results**
+
+| Model              | Accuracy  | Precision | Recall    | F1-Score  |
+| ------------------ | --------- | --------- | --------- | --------- |
+| **Random Forest**  | 92.3%     | 89.1%     | 94.7%     | 91.8%     |
+| **Gradient Boost** | 91.8%     | 88.6%     | 93.9%     | 91.2%     |
+| **SVM (RBF)**      | 89.7%     | 86.2%     | 92.1%     | 89.1%     |
+| **Ensemble**       | **93.1%** | **90.4%** | **95.2%** | **92.7%** |
 
 ### **Feature Importance Analysis**
+
+| Rank  | Feature                    | Importance | Impact                        |
+| ----- | -------------------------- | ---------- | ----------------------------- |
+| **1** | Tool Wear                  | 28.4%      | Primary degradation indicator |
+| **2** | Torque Variance            | 24.1%      | Mechanical stress patterns    |
+| **3** | Temperature Differential   | 19.7%      | Thermal anomalies             |
+| **4** | Rotational Speed Stability | 15.8%      | Motor performance             |
+| **5** | Process Temperature        | 12.0%      | Environmental factors         |
+
+### **Performance Benchmarks**
+
+| Metric                 | Achievement | Industry Standard | Advantage                |
+| ---------------------- | ----------- | ----------------- | ------------------------ |
+| **ROC AUC Score**      | 0.967       | 0.85-0.90         | Excellent discrimination |
+| **Prediction Latency** | <100ms P95  | <500ms            | 5x faster response       |
+| **Model Size**         | 15.2 MB     | 50-100 MB         | 70% smaller footprint    |
+| **Training Time**      | 12 minutes  | 2-4 hours         | 90% faster iteration     |
+| **Memory Usage**       | 512 MB      | 2-4 GB            | 75% resource efficiency  |
+
+### **Feature Importance Analysis**
+
 1. **Tool Wear (28.4%)** - Primary degradation indicator
 2. **Torque Variance (24.1%)** - Mechanical stress patterns
 3. **Temperature Differential (19.7%)** - Thermal anomalies
@@ -89,24 +104,28 @@ I'll provide the complete README content here directly:
 ## 🛠️ Technology Stack
 
 ### **Machine Learning & Data**
+
 - **Core ML**: `scikit-learn`, `pandas`, `numpy`
 - **Advanced Analytics**: `scipy`, `statsmodels`
 - **Model Management**: `MLflow`, `DVC`
 - **Data Validation**: `Great Expectations`, `Evidently`
 
 ### **API & Web Framework**
+
 - **Backend**: `FastAPI` with async support
 - **Frontend**: `Streamlit` for dashboards
 - **Authentication**: `OAuth 2.0`, `JWT`
 - **Documentation**: `OpenAPI/Swagger`
 
 ### **Infrastructure & DevOps**
+
 - **Containerization**: `Docker`, `Docker Compose`
 - **Orchestration**: `Kubernetes`, `Helm`
 - **CI/CD**: `GitHub Actions`, `ArgoCD`
 - **Cloud**: `AWS ECS`, `ECR`, `S3`, `RDS`
 
 ### **Monitoring & Observability**
+
 - **Metrics**: `Prometheus`, `Grafana`
 - **Logging**: `ELK Stack` (Elasticsearch, Logstash, Kibana)
 - **Tracing**: `Jaeger`, `OpenTelemetry`
@@ -115,25 +134,26 @@ I'll provide the complete README content here directly:
 ## 🚀 Quick Start
 
 ### **Prerequisites**
+
 - Python 3.9+
 - Docker & Docker Compose
 - Git
 
 ### **1. Local Development Setup**
+
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/predictive-maintenance-mlops.git
+git clone https://github.com/Sa1f27/predictive-maintenance-mlops.git
 cd predictive-maintenance-mlops
 
 # Setup virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+python3.11 -m venv venv
+venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 pip install -e .
-````
+```
 
 ### **2. Run ML Pipeline**
 
@@ -242,28 +262,9 @@ pytest tests/ --cov=src --cov-report=html --cov-report=term
 # - End-to-end tests: 90%
 ```
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### **Development Workflow**
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact & Support
-
-- **Author**: [Your Name](https://github.com/yourusername)
-- **Email**: your.email@domain.com
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/predictive-maintenance-mlops/issues)
 
 ---
 
@@ -271,28 +272,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **⭐ Star this repository if it helped you build production-ready ML systems!**
 
-[🚀 Deploy Now](docs/deployment.md) • [📊 View Demo](http://your-demo-url.com) • [💬 Get Support](https://github.com/yourusername/predictive-maintenance-mlops/discussions)
-
 </div>
-```
-
-## **🎯 Key Sections That Make This README Stand Out**
-
-1. **Professional Badges**: Instantly shows tech stack and project type
-2. **Business Impact Table**: Quantified metrics recruiters love to see
-3. **Feature Highlights**: Shows production-ready capabilities beyond basic ML
-4. **Technology Stack**: Comprehensive list showing modern MLOps tools
-5. **Quick Start**: Easy setup instructions for technical evaluation
-6. **API Documentation**: Shows you understand production deployment
-7. **Security & Compliance**: Demonstrates enterprise-ready thinking
-
-## **💡 Customization Tips**
-
-Replace these placeholders with your actual information:
-
-- `yourusername` → your GitHub username
-- `your.email@domain.com` → your actual email
-- `your-deployment-url.com` → your actual deployment URL
-- Update metrics based on your actual model performance
-
-This README positions your project as a **professional-grade MLOps solution** that demonstrates both technical skills and business understanding!

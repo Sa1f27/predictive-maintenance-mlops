@@ -1,19 +1,195 @@
-<!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Predictive Maintenance</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Predictive Maintenance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1 class="header">Welcome to Predictive Maintenance Application</h1>
-        <p class="lead">Click below to start predicting maintenance needs for your equipment.</p>
-        <a href="/predictdata" class="btn btn-primary">Start Prediction</a>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <div class="badge-container mb-4">
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                <i class="fas fa-cogs me-2"></i>AI-Powered Maintenance
+                            </span>
+                        </div>
+                        <h1 class="hero-title">
+                            Predictive Maintenance
+                            <span class="text-gradient">Intelligence</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            Leverage machine learning to predict equipment failures before they happen. 
+                            Reduce downtime, optimize maintenance schedules, and maximize operational efficiency.
+                        </p>
+                        
+                        <div class="stats-container mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">90%+</h3>
+                                        <p class="stat-label">Accuracy</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">5</h3>
+                                        <p class="stat-label">ML Models</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">Real-time</h3>
+                                        <p class="stat-label">Predictions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cta-buttons">
+                            <a href="/predictdata" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-rocket me-2"></i>Start Prediction
+                            </a>
+                            <a href="#features" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-info-circle me-2"></i>Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="dashboard-preview">
+                            <div class="dashboard-header">
+                                <div class="dashboard-dots">
+                                    <span class="dot red"></span>
+                                    <span class="dot yellow"></span>
+                                    <span class="dot green"></span>
+                                </div>
+                                <span class="dashboard-title">Maintenance Dashboard</span>
+                            </div>
+                            <div class="dashboard-content">
+                                <div class="chart-container">
+                                    <div class="chart-bar" style="height: 60%"></div>
+                                    <div class="chart-bar" style="height: 80%"></div>
+                                    <div class="chart-bar" style="height: 45%"></div>
+                                    <div class="chart-bar" style="height: 90%"></div>
+                                    <div class="chart-bar" style="height: 70%"></div>
+                                </div>
+                                <div class="status-indicators">
+                                    <div class="status-item">
+                                        <span class="status-dot green-dot"></span>
+                                        <span>Equipment A: Normal</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-dot yellow-dot"></span>
+                                        <span>Equipment B: Attention</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-dot red-dot"></span>
+                                        <span>Equipment C: Critical</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-12">
+                    <h2 class="section-title">Why Choose Our Solution?</h2>
+                    <p class="section-subtitle">Advanced machine learning capabilities for industrial maintenance</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI-Powered Analysis</h4>
+                        <p>Multiple ML algorithms analyze sensor data to predict equipment failures with high accuracy.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>Real-time Monitoring</h4>
+                        <p>Continuous monitoring of equipment parameters with instant failure risk assessment.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Predictive Analytics</h4>
+                        <p>Advanced analytics to optimize maintenance schedules and reduce operational costs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h2 class="cta-title">Ready to Get Started?</h2>
+                    <p class="cta-subtitle">
+                        Test our predictive maintenance system with your equipment data
+                    </p>
+                    <a href="/predictdata" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Try It Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>

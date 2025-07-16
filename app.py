@@ -26,7 +26,7 @@ def predict_datapoint():
             Torque=float((request.form.get('Torque_Nm'))),  
             Tool_wear=(request.form.get('Tool_wear_min'))  
         )
-        pred_data = data.transfrom_data_as_dataframe()
+        pred_data = data.transform_data_as_dataframe()
         print(pred_data)
         print("Before Prediction")
 
@@ -41,5 +41,6 @@ def predict_datapoint():
             message = "There are no chances of machine failure. It is performing well for now."
         return render_template('home.html', results=message)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+# In app.py, add debug=True
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8080, debug=True)

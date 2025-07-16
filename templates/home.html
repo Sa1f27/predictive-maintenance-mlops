@@ -1,53 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Predictive Maintenance Dashboard</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1 class="header">Predictive Maintenance System</h1>
-        <p class="lead">Enter the details below to predict machine maintenance requirements.</p>
 
-        <form method="POST" action="/predictdata">
-            <div class="form-group">
-                <label for="Type">Type</label>
-                <input type="text" class="form-control" id="Type" name="Type" required>
+<body class="prediction-page">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cogs me-2"></i>Predictive Maintenance
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/predictdata">
+                            <i class="fas fa-chart-line me-1"></i>Predict
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="form-group">
-                <label for="Air_temperature_K">Air Temperature (K)</label>
-                <input type="number" class="form-control" id="Air_temperature_K" name="Air_temperature_K" step="any" required>
-            </div>
-            <div class="form-group">
-                <label for="Process_temperature_K">Process Temperature (K)</label>
-                <input type="number" class="form-control" id="Process_temperature_K" name="Process_temperature_K" step="any" required>
-            </div>
-            <div class="form-group">
-                <label for="Rotational_speed_rpm">Rotational Speed (rpm)</label>
-                <input type="number" class="form-control" id="Rotational_speed_rpm" name="Rotational_speed_rpm" required>
-            </div>
-            <div class="form-group">
-                <label for="Torque_Nm">Torque (Nm)</label>
-                <input type="number" class="form-control" id="Torque_Nm" name="Torque_Nm" step="any" required>
-            </div>
-            <div class="form-group">
-                <label for="Tool_wear_min">Tool Wear (min)</label>
-                <input type="number" class="form-control" id="Tool_wear_min" name="Tool_wear_min" step="any" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Predict</button>
-        </form>
+        </div>
+    </nav>
 
-        {% if results %}
-            <div class="alert alert-success mt-4" role="alert">
-                {{ results }}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar with Info -->
+            <div class="col-lg-4 col-xl-3 sidebar">
+                <div class="sidebar-content">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-info-circle me-2"></i>
+                        System Information
+                    </h3>
+
+                    <div class="info-card">
+                        <h5><i class="fas fa-microchip me-2"></i>Model Status</h5>
+                        <div class="status-indicator">
+                            <span class="status-dot green-dot"></span>
+                            <span>Active & Ready</span>
+                        </div>
+                        <small class="text-muted">Last updated: Just now</small>
+                    </div>
+
+                    <div class="info-card">
+                        <h5><i class="fas fa-chart-bar me-2"></i>Performance</h5>
+                        <div class="metric-item">
+                            <span>Accuracy:</span>
+                            <span class="metric-value">90%+</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>Response Time:</span>
+                            <span class="metric-value">&lt;100ms</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h5><i class="fas fa-list me-2"></i>Input Parameters</h5>
+                        <ul class="parameter-list">
+                            <li><strong>Type:</strong> Machine category (L/M/H)</li>
+                            <li><strong>Air Temp:</strong> Ambient temperature</li>
+                            <li><strong>Process Temp:</strong> Operating temperature</li>
+                            <li><strong>Speed:</strong> Rotational velocity</li>
+                            <li><strong>Torque:</strong> Applied force</li>
+                            <li><strong>Tool Wear:</strong> Usage duration</li>
+                        </ul>
+                    </div>
+
+                    <div class="sample-data-card">
+                        <h5><i class="fas fa-lightbulb me-2"></i>Sample Data</h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="fillSampleData()">
+                            <i class="fas fa-magic me-1"></i>Fill Sample Values
+                        </button>
+                    </div>
+                </div>
             </div>
-        {% endif %}
+
+            <!-- Main Content -->
+            <div class="col-lg-8 col-xl-9 main-content">
+                <div class="prediction-container">
+                    <div class="header-section">
+                        <h1 class="page-title">
+                            <i class="fas fa-robot me-3"></i>
+                            Equipment Failure Prediction
+                        </h1>
+                        <p class="page-subtitle">
+                            Enter equipment parameters below to get an instant failure risk assessment
+                        </p>
+                    </div>
+
+                    {% if results %}
+                    <div class="result-container mb-4">
+                        <div class="result-card {% if 'No chance' in results %}success{% else %}danger{% endif %}">
+                            <div class="result-icon">
+                                {% if 'No chance' in results %}
+                                <i class="fas fa-check-circle"></i>
+                                {% else %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {% endif %}
+                            </div>
+                            <div class="result-content">
+                                <h4 class="result-title">Prediction Result</h4>
+                                <p class="result-text">{{ results }}</p>
+                                <div class="result-actions">
+                                    <button class="btn btn-sm btn-outline-light" onclick="downloadReport()">
+                                        <i class="fas fa-download me-1"></i>Download Report
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-light" onclick="resetForm()">
+                                        <i class="fas fa-redo me-1"></i>New Prediction
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="/predictdata" class="prediction-form">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-sliders-h me-2"></i>
+                                Equipment Parameters
+                            </h3>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Type" class="form-label">
+                                        <i class="fas fa-tag me-1"></i>Machine Type
+                                    </label>
+                                    <select class="form-select form-control-modern" id="Type" name="Type" required>
+                                        <option value="">Select machine type</option>
+                                        <option value="L">Low (L)</option>
+                                        <option value="M">Medium (M)</option>
+                                        <option value="H">High (H)</option>
+                                    </select>
+                                    <div class="form-hint">Choose the machine performance category</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="Tool_wear_min" class="form-label">
+                                        <i class="fas fa-wrench me-1"></i>Tool Wear (minutes)
+                                    </label>
+                                    <input type="number" class="form-control form-control-modern" id="Tool_wear_min"
+                                        name="Tool_wear_min" placeholder="0-300" min="0" max="300" required>
+                                    <div class="form-hint">Total tool usage time in minutes</div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Air_temperature_K" class="form-label">
+                                        <i class="fas fa-thermometer-half me-1"></i>Air Temperature (K)
+                                    </label>
+                                    <input type="number" class="form-control form-control-modern" id="Air_temperature_K"
+                                        name="Air_temperature_K" placeholder="295-305" step="0.1" min="250" max="350"
+                                        required>
+                                    <div class="form-hint">Ambient temperature in Kelvin</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="Process_temperature_K" class="form-label">
+                                        <i class="fas fa-fire me-1"></i>Process Temperature (K)
+                                    </label>
+                                    <input type="number" class="form-control form-control-modern"
+                                        id="Process_temperature_K" name="Process_temperature_K" placeholder="305-315"
+                                        step="0.1" min="280" max="380" required>
+                                    <div class="form-hint">Operating temperature in Kelvin</div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Rotational_speed_rpm" class="form-label">
+                                        <i class="fas fa-sync-alt me-1"></i>Rotational Speed (RPM)
+                                    </label>
+                                    <input type="number" class="form-control form-control-modern"
+                                        id="Rotational_speed_rpm" name="Rotational_speed_rpm" placeholder="1200-2800"
+                                        min="1000" max="3000" required>
+                                    <div class="form-hint">Motor speed in revolutions per minute</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="Torque_Nm" class="form-label">
+                                        <i class="fas fa-cog me-1"></i>Torque (Nm)
+                                    </label>
+                                    <input type="number" class="form-control form-control-modern" id="Torque_Nm"
+                                        name="Torque_Nm" placeholder="10-80" step="0.1" min="0" max="100" required>
+                                    <div class="form-hint">Applied torque in Newton-meters</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg predict-btn">
+                                <i class="fas fa-brain me-2"></i>
+                                <span class="btn-text">Predict Maintenance Need</span>
+                                <div class="btn-loader d-none">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            </button>
+                            <button type="reset" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-eraser me-2"></i>Clear Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for testing
+        function fillSampleData() {
+            document.getElementById('Type').value = 'M';
+            document.getElementById('Air_temperature_K').value = '298.1';
+            document.getElementById('Process_temperature_K').value = '308.6';
+            document.getElementById('Rotational_speed_rpm').value = '1551';
+            document.getElementById('Torque_Nm').value = '42.8';
+            document.getElementById('Tool_wear_min').value = '0';
+        }
+
+        // Form submission with loading state
+        document.querySelector('.prediction-form').addEventListener('submit', function () {
+            const btn = document.querySelector('.predict-btn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoader = btn.querySelector('.btn-loader');
+
+            btn.disabled = true;
+            btnText.classList.add('d-none');
+            btnLoader.classList.remove('d-none');
+        });
+
+        // Reset form function
+        function resetForm() {
+            document.querySelector('.prediction-form').reset();
+            document.querySelector('.result-container')?.remove();
+        }
+
+        // Download report function (placeholder)
+        function downloadReport() {
+            alert('Report download feature will be implemented in future versions.');
+        }
+
+        // Form validation and hints
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function () {
+                const value = parseFloat(this.value);
+                const min = parseFloat(this.getAttribute('min'));
+                const max = parseFloat(this.getAttribute('max'));
+
+                if (value < min || value > max) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+        });
+
+        // Auto-resize and enhance form experience
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add animation classes
+            setTimeout(() => {
+                document.querySelector('.prediction-container').classList.add('animate-in');
+            }, 100);
+        });
+    </script>
 </body>
+
 </html>
