@@ -30,7 +30,7 @@ class BatchPrediction:
             
             missing_columns = [col for col in required_columns if col not in df.columns]
             if missing_columns:
-                raise CustomException(f"Missing required columns: {missing_columns}")
+                raise CustomException(f"Missing required columns: {missing_columns}", sys)
             
             # Make predictions
             predictions, confidence_scores = self.predict_pipeline.predict(df[required_columns])

@@ -15,7 +15,7 @@ from dataclasses import dataclass
 class DataTransformetaionConfig:
     data_processor_obj_file_path= os.path.join("artificats", "processor.pkl")
 
-class DataTransformetaion:
+class DataTransformation:
     def __init__(self):
         self.data_transformetaion_config = DataTransformetaionConfig()
 
@@ -42,7 +42,7 @@ class DataTransformetaion:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def initiate_transfromation(self, train_path, test_path):
+    def initiate_transformation(self, train_path, test_path):
         try: 
             
             train_df = pd.read_csv(train_path)

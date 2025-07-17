@@ -32,7 +32,7 @@ class TrainingPipeline:
             # Stage 2: Data Transformation
             logging.info("STAGE 2: Data Transformation Started")
             data_transformation = DataTransformation()
-            train_arr, test_arr, preprocessor_path = data_transformation.initiate_data_transformation(
+            train_arr, test_arr, preprocessor_path = data_transformation.initiate_transformation(
                 train_data_path, test_data_path
             )
             logging.info(f"Data Transformation Completed Successfully")
@@ -99,7 +99,7 @@ class TrainingPipeline:
             
             if missing_artifacts:
                 logging.error(f"Missing artifacts: {missing_artifacts}")
-                raise CustomException(f"Pipeline failed - Missing artifacts: {missing_artifacts}")
+                raise CustomException(f"Pipeline failed - Missing artifacts: {missing_artifacts}", sys)
             else:
                 logging.info("✅ All artifacts validated successfully!")
                 

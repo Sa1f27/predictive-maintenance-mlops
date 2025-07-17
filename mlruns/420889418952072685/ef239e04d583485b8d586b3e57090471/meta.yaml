@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/420889418952072685/ef239e04d583485b8d586b3e57090471/artifacts
+end_time: 1752735736994
+entry_point_name: ''
+experiment_id: '420889418952072685'
+lifecycle_stage: active
+run_id: ef239e04d583485b8d586b3e57090471
+run_name: suave-gull-52
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752735720851
+status: 4
+tags: []
+user_id: DELL 3410

@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from src.components.data_transformation import DataTransformetaionConfig
-from src.components.data_transformation import DataTransformetaion
+from src.components.data_transformation import DataTransformation
 
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
@@ -24,10 +24,10 @@ class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
 
-    def start_data_ingestion(self):
+    def initiate_data_ingestion(self):
         logging.info("Staring to load the dataset")
         try:
-            df = pd.read_csv(r'Notebook[EDA-Model]\Data\predictive_maintenance.csv')
+            df = pd.read_csv(r'Data\predictive_maintenance.csv')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
 
@@ -51,9 +51,9 @@ class DataIngestion:
         
 if __name__ == '__main__':
     obj = DataIngestion()
-    train_df, test_df = obj.start_data_ingestion()
+    train_df, test_df = obj.initiate_data_ingestion()
 
-    data_transformation = DataTransformetaion()
+    data_transformation = DataTransformation()
     train_array, test_array,_ = data_transformation.initiate_transfromation(train_df, test_df)
 
 
