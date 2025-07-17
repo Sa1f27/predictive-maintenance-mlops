@@ -24,17 +24,17 @@ This project addresses a real-world industrial challenge: **predicting equipment
 
 ### MLOps Infrastructure
 - **Experiment Tracking**: MLflow
-- **Web Framework**: Flask with REST API
+- **Web Framework**: FastAPI with REST API
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
-- **Monitoring**: Health checks, logging
-- **Deployment**: AWS simulation, local development
+- **Monitoring**: CloudWatch, Prometheus, health checks
+- **Deployment**: AWS ECS, EC2, S3
 
 ### Data Pipeline
 - **Data Source**: Industrial IoT sensor telemetry
 - **Features**: Temperature, speed, torque, tool wear, equipment type
 - **Processing**: Data validation, feature engineering, scaling
-- **Storage**: CSV → Pandas → ML-ready format
+- **API**: FastAPI with automatic documentation
 
 ## 🏗️ Project Architecture
 
@@ -55,9 +55,11 @@ This project addresses a real-world industrial challenge: **predicting equipment
 │   └── Automated retraining
 │
 └── 🚀 Deployment Pipeline
-    ├── Flask web application
+    ├── FastAPI web application
     ├── Docker containerization
-    └── CI/CD automation
+    ├── AWS ECR image registry
+    ├── AWS ECS container orchestration
+    └── CI/CD with GitHub Actions
 ```
 
 ## 🚀 Getting Started
@@ -83,7 +85,7 @@ python run_pipeline.py --mode train
 
 # Start services
 mlflow server --host 0.0.0.0 --port 5000 &  # Start MLflow
-python app.py  # Start web application
+python app.py  # Start FastAPI application
 ```
 
 ### Docker Deployment
@@ -95,6 +97,19 @@ docker-compose up -d --build
 # Web App: http://localhost:8080
 # MLflow: http://localhost:5000
 ```
+
+### AWS Deployment
+```bash
+# Build and push to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-east-1.amazonaws.com
+docker build -t predictive-maintenance .
+docker tag predictive-maintenance:latest <account>.dkr.ecr.us-east-1.amazonaws.com/predictive-maintenance:latest
+docker push <account>.dkr.ecr.us-east-1.amazonaws.com/predictive-maintenance:latest
+
+# Deploy to ECS
+aws ecs update-service --cluster mlops-cluster --service maintenance-service --force-new-deployment
+```
+
 
 ![Capture](https://github.com/user-attachments/assets/b5ea1ab5-03d2-44e6-8820-187a19caeaef)
 
@@ -109,6 +124,7 @@ docker-compose up -d --build
 ![Capture6](https://github.com/user-attachments/assets/6bc82e51-f6ae-40f0-b5e4-0aeee2da48ce)
 
 ![cicd-ithub-actions](https://github.com/user-attachments/assets/5441b56f-bbf5-4475-b994-73d7f2cc0458)
+
 
 ## 📈 Model Performance
 
@@ -143,7 +159,7 @@ docker-compose up -d --build
 
 ### 🔍 Monitoring & Health
 - **Health Endpoint**: `/health` for system status
-- **API Documentation**: REST endpoints for integration
+- **API Documentation**: `/docs` with interactive testing
 - **Performance Metrics**: Response time monitoring
 - **Error Handling**: Graceful failure management
 
@@ -165,7 +181,7 @@ docker-compose up -d --build
 
 ### Automated Workflow
 ```yaml
-Code Push → Linting → Testing → Model Training → Docker Build → Deployment
+Code Push → Linting → Testing → Model Training → Docker Build → ECR Push → ECS Deploy
 ```
 
 ### Quality Gates
@@ -173,6 +189,8 @@ Code Push → Linting → Testing → Model Training → Docker Build → Deploy
 - **Unit Testing**: Component-level validation
 - **Integration Testing**: End-to-end pipeline verification
 - **Performance Testing**: Model accuracy thresholds
+- **Security Scanning**: Container vulnerability checks
+- **Deployment**: Blue-green deployment on AWS ECS
 
 ## 📁 Project Structure
 
@@ -221,10 +239,11 @@ predictive-maintenance-mlops/
 - **Quality Improvement**: Preventing equipment degradation
 
 ### Technical Achievements
-- **Scalable Architecture**: Microservices-ready design
+- **Scalable Architecture**: Microservices on AWS ECS
 - **Real-time Processing**: Sub-100ms prediction latency
-- **Model Versioning**: Systematic experiment management
-- **Monitoring Integration**: Production-ready observability
+- **Model Versioning**: MLflow with S3 artifact storage
+- **Container Orchestration**: Docker + ECS deployment
+- **Monitoring Integration**: CloudWatch metrics and alarms
 
 ## 🔮 Future Enhancements
 
@@ -237,19 +256,19 @@ predictive-maintenance-mlops/
 ### Long Term
 - [ ] Deep learning models for time series analysis
 - [ ] Multi-variate anomaly detection
-- [ ] Edge deployment for IoT devices
-- [ ] Advanced AutoML integration
+- [ ] Edge deployment with AWS IoT Greengrass
+- [ ] Advanced AutoML with SageMaker integration
+- [ ] Real-time streaming with Kinesis
 
 ### Development Process
 1. **Research Phase**: Industrial maintenance literature review
 2. **Data Analysis**: Exploratory data analysis and feature selection
 3. **Model Development**: Iterative training and validation
 4. **System Design**: Architecture planning and implementation
-5. **Testing & Validation**: Comprehensive quality assurance
+5. **Testing & Deployment**: Comprehensive validation and containerization
 6. **Documentation**: Technical and user documentation
 
----
 
-> **Note**: This project represents a comprehensive learning journey in MLOps, covering everything from data science fundamentals to production deployment. Each component was implemented with production considerations while maintaining code clarity for educational purposes.
+> **Note**: This project demonstrates end-to-end MLOps implementation, covering data science fundamentals through production deployment. Each component was built with scalability and maintainability in mind while ensuring code clarity and documentation.
 
-**Tech Stack**: Python • scikit-learn • MLflow • GitHub Actions • Docker • AWS • Flask
+**Tech Stack**: Python • scikit-learn • MLflow • FastAPI • Docker • AWS (ECS, ECR, S3, CloudWatch) • GitHub Actions
