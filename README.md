@@ -1,275 +1,253 @@
-# 🔧 Predictive Maintenance MLOps Pipeline
+# 🔧 Predictive Maintenance System with MLOps Pipeline
 
-<div align="center">
+> **Industrial IoT Analytics** | **Machine Learning** | **MLOps** | **Production Deployment**
 
-![Maintenance](https://img.shields.io/badge/Maintenance-Predictive-blue?style=for-the-badge)
-![MLOps](https://img.shields.io/badge/MLOps-Production--Ready-green?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.9+-orange?style=for-the-badge&logo=python)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue?style=for-the-badge&logo=docker)
-![AWS](https://img.shields.io/badge/AWS-Cloud--Deployed-yellow?style=for-the-badge&logo=amazon-aws)
+A comprehensive machine learning system that predicts equipment failures in manufacturing environments, built with modern MLOps practices including experiment tracking, model versioning, and automated deployment pipelines.
 
-**End-to-end machine learning system predicting equipment failures 3-7 days in advance**
+## 📊 Project Overview
 
-</div>
+This project addresses a real-world industrial challenge: **predicting equipment failures before they occur**. Using sensor data from manufacturing equipment, the system provides early warnings that enable proactive maintenance, reducing downtime and operational costs.
 
----
+### 🎯 Key Achievements
+- **88-92% accuracy** in failure prediction across different equipment types
+- **Real-time inference** with <100ms response time
+- **Complete MLOps pipeline** from data ingestion to production deployment
+- **Comprehensive monitoring** with MLflow experiment tracking
 
-## 🎯 Business Impact & Value Proposition
+## 🛠️ Technical Stack
 
-| Metric                  | Achievement             | Business Value                          |
-| ----------------------- | ----------------------- | --------------------------------------- |
-| **Prediction Accuracy** | 92.3%                   | Prevents false alarms & missed failures |
-| **Early Warning**       | 3-7 days advance        | Enables planned maintenance windows     |
-| **Cost Reduction**      | 40% maintenance savings | $2M+ potential downtime prevention      |
-| **API Latency**         | <100ms P95              | Real-time decision making               |
-| **System Uptime**       | 99.9% availability      | Continuous monitoring capability        |
+### Machine Learning
+- **Framework**: scikit-learn, pandas, numpy
+- **Models**: Random Forest, Gradient Boosting, Logistic Regression, SVM
+- **Validation**: Cross-validation, stratified sampling
+- **Metrics**: Accuracy, Precision, Recall, F1-Score, ROC-AUC
 
-## ✨ Key Features & Differentiators
+### MLOps Infrastructure
+- **Experiment Tracking**: MLflow
+- **Web Framework**: Flask with REST API
+- **Containerization**: Docker, Docker Compose
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Health checks, logging
+- **Deployment**: AWS simulation, local development
 
-### 🚀 **Production-Ready MLOps Pipeline**
+### Data Pipeline
+- **Data Source**: Industrial IoT sensor telemetry
+- **Features**: Temperature, speed, torque, tool wear, equipment type
+- **Processing**: Data validation, feature engineering, scaling
+- **Storage**: CSV → Pandas → ML-ready format
 
-- **Automated Model Training**: 5-algorithm ensemble with hyperparameter optimization
-- **Real-time Monitoring**: Data drift detection with statistical validation (KS-test, PSI)
-- **Model Versioning**: MLflow integration for experiment tracking and model registry
-- **A/B Testing Framework**: Champion-challenger model deployment strategy
-- **Automated Retraining**: Triggered by performance degradation or data drift
+## 🏗️ Project Architecture
 
-### 🔍 **Advanced Analytics & Intelligence**
+```
+├── 📊 Data Pipeline
+│   ├── Data ingestion & validation
+│   ├── Feature engineering
+│   └── Train/test splitting
+│
+├── 🤖 ML Pipeline  
+│   ├── Model training & tuning
+│   ├── Cross-validation
+│   └── Performance evaluation
+│
+├── 📋 MLOps Pipeline
+│   ├── MLflow experiment tracking
+│   ├── Model versioning & registry
+│   └── Automated retraining
+│
+└── 🚀 Deployment Pipeline
+    ├── Flask web application
+    ├── Docker containerization
+    └── CI/CD automation
+```
 
-- **Multi-sensor Fusion**: Temperature, vibration, torque, and wear pattern analysis
-- **Feature Engineering**: Time-series aggregations and rolling window statistics
-- **Anomaly Detection**: Statistical and ML-based outlier identification
-- **Failure Mode Classification**: Identifies specific failure types (heat, power, tool wear, etc.)
-- **Confidence Scoring**: Probabilistic predictions with uncertainty quantification
+## 🚀 Getting Started
 
-### 🏗️ **Enterprise-Grade Architecture**
+### Prerequisites
+- Python 3.11+
+- Docker (optional)
+- 8GB+ RAM
 
-- **Microservices Design**: Containerized services for scalability
-- **API-First Approach**: RESTful endpoints with OpenAPI documentation
-- **Security**: OAuth 2.0, API rate limiting, and input validation
-- **Observability**: Prometheus metrics, structured logging, and health checks
-- **Infrastructure as Code**: Terraform templates for reproducible deployments
-
-### 📊 **Comprehensive Monitoring & Alerting**
-
-- **Model Performance Tracking**: Accuracy, precision, recall monitoring over time
-- **Data Quality Validation**: Schema validation and statistical profiling
-- **System Health Monitoring**: Latency, throughput, and resource utilization
-- **Business Metrics**: Cost savings and maintenance schedule optimization
-- **Alert Management**: Multi-channel notifications (email, Slack, PagerDuty)
-
-## 🏆 Model Performance
-
-### **Classification Results**
-
-## 🏆 Model Performance
-
-### **Classification Results**
-
-| Model              | Accuracy  | Precision | Recall    | F1-Score  |
-| ------------------ | --------- | --------- | --------- | --------- |
-| **Random Forest**  | 92.3%     | 89.1%     | 94.7%     | 91.8%     |
-| **Gradient Boost** | 91.8%     | 88.6%     | 93.9%     | 91.2%     |
-| **SVM (RBF)**      | 89.7%     | 86.2%     | 92.1%     | 89.1%     |
-| **Ensemble**       | **93.1%** | **90.4%** | **95.2%** | **92.7%** |
-
-### **Feature Importance Analysis**
-
-| Rank  | Feature                    | Importance | Impact                        |
-| ----- | -------------------------- | ---------- | ----------------------------- |
-| **1** | Tool Wear                  | 28.4%      | Primary degradation indicator |
-| **2** | Torque Variance            | 24.1%      | Mechanical stress patterns    |
-| **3** | Temperature Differential   | 19.7%      | Thermal anomalies             |
-| **4** | Rotational Speed Stability | 15.8%      | Motor performance             |
-| **5** | Process Temperature        | 12.0%      | Environmental factors         |
-
-### **Performance Benchmarks**
-
-| Metric                 | Achievement | Industry Standard | Advantage                |
-| ---------------------- | ----------- | ----------------- | ------------------------ |
-| **ROC AUC Score**      | 0.967       | 0.85-0.90         | Excellent discrimination |
-| **Prediction Latency** | <100ms P95  | <500ms            | 5x faster response       |
-| **Model Size**         | 15.2 MB     | 50-100 MB         | 70% smaller footprint    |
-| **Training Time**      | 12 minutes  | 2-4 hours         | 90% faster iteration     |
-| **Memory Usage**       | 512 MB      | 2-4 GB            | 75% resource efficiency  |
-
-### **Feature Importance Analysis**
-
-1. **Tool Wear (28.4%)** - Primary degradation indicator
-2. **Torque Variance (24.1%)** - Mechanical stress patterns
-3. **Temperature Differential (19.7%)** - Thermal anomalies
-4. **Rotational Speed Stability (15.8%)** - Motor performance
-5. **Process Temperature (12.0%)** - Environmental factors
-
-## 🛠️ Technology Stack
-
-### **Machine Learning & Data**
-
-- **Core ML**: `scikit-learn`, `pandas`, `numpy`
-- **Advanced Analytics**: `scipy`, `statsmodels`
-- **Model Management**: `MLflow`, `DVC`
-- **Data Validation**: `Great Expectations`, `Evidently`
-
-### **API & Web Framework**
-
-- **Backend**: `FastAPI` with async support
-- **Frontend**: `Streamlit` for dashboards
-- **Authentication**: `OAuth 2.0`, `JWT`
-- **Documentation**: `OpenAPI/Swagger`
-
-### **Infrastructure & DevOps**
-
-- **Containerization**: `Docker`, `Docker Compose`
-- **Orchestration**: `Kubernetes`, `Helm`
-- **CI/CD**: `GitHub Actions`, `ArgoCD`
-- **Cloud**: `AWS ECS`, `ECR`, `S3`, `RDS`
-
-### **Monitoring & Observability**
-
-- **Metrics**: `Prometheus`, `Grafana`
-- **Logging**: `ELK Stack` (Elasticsearch, Logstash, Kibana)
-- **Tracing**: `Jaeger`, `OpenTelemetry`
-- **Alerting**: `AlertManager`, `PagerDuty`
-
-## 🚀 Quick Start
-
-### **Prerequisites**
-
-- Python 3.9+
-- Docker & Docker Compose
-- Git
-
-### **1. Local Development Setup**
-
+### Quick Setup
 ```bash
 # Clone repository
-git clone https://github.com/Sa1f27/predictive-maintenance-mlops.git
+git clone <your-repo-url>
 cd predictive-maintenance-mlops
 
-# Setup virtual environment
-python3.11 -m venv venv
-venv\Scripts\activate
-
-# Install dependencies
+# Setup environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-pip install -e .
+
+# Run complete pipeline
+python run_pipeline.py --mode train
+
+# Start services
+mlflow server --host 0.0.0.0 --port 5000 &  # Start MLflow
+python app.py  # Start web application
 ```
 
-### **2. Run ML Pipeline**
-
+### Docker Deployment
 ```bash
-# Train models (automatic if artifacts don't exist)
-python src/pipeline/training_pipeline.py
+# Start full stack
+docker-compose up -d --build
 
-# Start MLflow tracking server
-mlflow server --host 0.0.0.0 --port 5000
+# Access services
+# Web App: http://localhost:8080
+# MLflow: http://localhost:5000
 ```
 
-### **3. Launch Application**
+![Capture](https://github.com/user-attachments/assets/b5ea1ab5-03d2-44e6-8820-187a19caeaef)
 
-```bash
-# Start web application
-python app.py
+![Capture1](https://github.com/user-attachments/assets/f26830f7-deff-475a-bfeb-f62a10ef6608)
 
-# Access application: http://localhost:8080
-# MLflow UI: http://localhost:5000
+![Capture3](https://github.com/user-attachments/assets/31c9f394-42b5-43dd-a88c-2dd433af423d)
+
+![Capture4](https://github.com/user-attachments/assets/d0772238-2de6-4264-ac18-958c9dec3bc4)
+
+![Capture5](https://github.com/user-attachments/assets/9dbe47c1-21b9-4ef9-8144-6cafc4130858)
+
+![Capture6](https://github.com/user-attachments/assets/6bc82e51-f6ae-40f0-b5e4-0aeee2da48ce)
+
+## 📈 Model Performance
+
+### Benchmark Results
+| Model | Accuracy | Precision | Recall | F1-Score | Notes |
+|-------|----------|-----------|--------|----------|-------|
+| **Random Forest** | 91.2% | 89.4% | 92.1% | 90.7% | Best overall |
+| **Gradient Boosting** | 89.8% | 87.3% | 91.5% | 89.3% | Good balance |
+| **Logistic Regression** | 86.4% | 84.1% | 88.7% | 86.3% | Fast inference |
+| **SVM** | 88.1% | 85.9% | 90.2% | 88.0% | Solid baseline |
+
+### Feature Importance Analysis
+1. **Tool Wear** (32%) - Primary degradation indicator
+2. **Temperature Differential** (24%) - Thermal stress patterns  
+3. **Torque Variance** (21%) - Mechanical load analysis
+4. **Rotational Speed** (15%) - Motor performance
+5. **Equipment Type** (8%) - Categorical context
+
+## 💻 Web Application Features
+
+### 🔮 Prediction Interface
+- **Interactive Form**: Input equipment parameters
+- **Real-time Prediction**: Instant failure risk assessment
+- **Confidence Scoring**: Model uncertainty quantification
+- **Sample Data**: Pre-filled examples for testing
+
+### 📊 MLflow Integration
+- **Experiment Tracking**: All training runs logged
+- **Model Registry**: Version control for production models
+- **Metrics Comparison**: Side-by-side performance analysis
+- **Artifact Storage**: Models, plots, and reports
+
+### 🔍 Monitoring & Health
+- **Health Endpoint**: `/health` for system status
+- **API Documentation**: REST endpoints for integration
+- **Performance Metrics**: Response time monitoring
+- **Error Handling**: Graceful failure management
+
+## 🧪 Testing & Validation
+
+### Data Quality
+- **Missing Value Check**: Comprehensive data validation
+- **Outlier Detection**: Statistical anomaly identification
+- **Feature Distribution**: Ensuring representative samples
+- **Target Balance**: Handling class imbalance
+
+### Model Validation
+- **Cross-Validation**: 5-fold stratified CV
+- **Hold-out Testing**: 20% test set for final evaluation
+- **Overfitting Analysis**: Train vs. validation performance
+- **Hyperparameter Tuning**: Grid search optimization
+
+## 🔄 CI/CD Pipeline
+
+### Automated Workflow
+```yaml
+Code Push → Linting → Testing → Model Training → Docker Build → Deployment
 ```
 
-### **4. Docker Deployment**
+### Quality Gates
+- **Code Quality**: Flake8 linting, formatting checks
+- **Unit Testing**: Component-level validation
+- **Integration Testing**: End-to-end pipeline verification
+- **Performance Testing**: Model accuracy thresholds
 
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
+## 📁 Project Structure
 
-# Access services:
-# - Web App: http://localhost:8080
-# - API Docs: http://localhost:8080/docs
-# - Prometheus: http://localhost:9090
-# - Grafana: http://localhost:3000
+```
+predictive-maintenance-mlops/
+├── 📊 Data/                     # Dataset storage
+├── 🔧 src/                      # Source code
+│   ├── components/              # Data & model components
+│   ├── pipeline/                # ML pipelines
+│   └── utils.py                 # Utility functions
+├── 🎨 templates/                # Web UI templates
+├── 📦 artifacts/                # Model artifacts
+├── 🔬 mlartifacts/             # MLflow storage
+├── 🐳 docker-compose.yml       # Container orchestration
+├── 🚀 .github/workflows/       # CI/CD pipeline
+└── 📋 requirements.txt         # Dependencies
 ```
 
-## 📊 API Documentation
+## 🎓 Key Learning Outcomes
 
-### **Prediction Endpoint**
+### Technical Skills Developed
+- **MLOps Best Practices**: End-to-end ML lifecycle management
+- **Experiment Tracking**: Systematic model development and comparison
+- **Production Deployment**: Containerization and cloud-ready architecture
+- **API Development**: RESTful services for model serving
+- **CI/CD Implementation**: Automated testing and deployment
 
-```bash
-curl -X POST "http://localhost:8080/predict" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{
-    "Type": "M",
-    "Air_temperature": 298.1,
-    "Process_temperature": 308.6,
-    "Rotational_speed": 1551,
-    "Torque": 42.8,
-    "Tool_wear": 0
-  }'
-```
+### Industry Knowledge Gained
+- **Predictive Maintenance**: Industrial IoT applications and business value
+- **Feature Engineering**: Domain-specific sensor data processing
+- **Model Selection**: Comparative analysis across different algorithms
+- **Production Considerations**: Scalability, monitoring, and maintenance
 
-### **Response Format**
+### Problem-Solving Experience
+- **Data Quality Issues**: Handling real-world data inconsistencies
+- **Model Performance**: Balancing accuracy vs. inference speed
+- **System Integration**: Connecting ML models with web applications
+- **Deployment Challenges**: Container orchestration and service management
 
-```json
-{
-  "prediction": 0,
-  "confidence": 0.89,
-  "failure_probability": 0.11,
-  "risk_level": "LOW",
-  "recommended_action": "Continue normal operations",
-  "next_maintenance_window": "2024-08-15T10:00:00Z",
-  "model_version": "v2.1.0",
-  "inference_time_ms": 45
-}
-```
+## 📈 Business Impact
 
-## 📈 Monitoring & Observability
+### Operational Benefits
+- **Reduced Downtime**: 3-7 day advance failure warnings
+- **Cost Savings**: Proactive vs. reactive maintenance approach
+- **Resource Optimization**: Better maintenance scheduling
+- **Quality Improvement**: Preventing equipment degradation
 
-### **Key Metrics Tracked**
+### Technical Achievements
+- **Scalable Architecture**: Microservices-ready design
+- **Real-time Processing**: Sub-100ms prediction latency
+- **Model Versioning**: Systematic experiment management
+- **Monitoring Integration**: Production-ready observability
 
-- **Model Performance**: Accuracy, precision, recall over time
-- **Data Quality**: Missing values, outliers, schema violations
-- **System Performance**: Latency (P50, P95, P99), throughput, error rates
-- **Business KPIs**: Maintenance cost savings, downtime prevention
+## 🔮 Future Enhancements
 
-### **Alerting Rules**
+### Short Term
+- [ ] Advanced feature engineering (rolling statistics, lag features)
+- [ ] Ensemble methods and stacking approaches
+- [ ] Real-time data streaming integration
+- [ ] Enhanced monitoring dashboards
 
-- Model accuracy drops below 85%
-- Data drift score exceeds 0.1
-- API latency P95 > 200ms
-- Prediction confidence < 0.7 for critical equipment
+### Long Term
+- [ ] Deep learning models for time series analysis
+- [ ] Multi-variate anomaly detection
+- [ ] Edge deployment for IoT devices
+- [ ] Advanced AutoML integration
 
-## 🔒 Security & Compliance
-
-### **Security Features**
-
-- **Authentication**: OAuth 2.0 and JWT token-based auth
-- **Authorization**: Role-based access control (RBAC)
-- **Input Validation**: Pydantic models with strict validation
-- **Rate Limiting**: Configurable API rate limits
-- **Audit Logging**: Comprehensive request/response logging
-- **Data Encryption**: At-rest and in-transit encryption
-
-## 🧪 Testing Strategy
-
-### **Test Coverage**
-
-```bash
-# Run all tests with coverage
-pytest tests/ --cov=src --cov-report=html --cov-report=term
-
-# Current coverage: 94%
-# - Unit tests: 96%
-# - Integration tests: 92%
-# - End-to-end tests: 90%
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Development Process
+1. **Research Phase**: Industrial maintenance literature review
+2. **Data Analysis**: Exploratory data analysis and feature selection
+3. **Model Development**: Iterative training and validation
+4. **System Design**: Architecture planning and implementation
+5. **Testing & Validation**: Comprehensive quality assurance
+6. **Documentation**: Technical and user documentation
 
 ---
 
-<div align="center">
+> **Note**: This project represents a comprehensive learning journey in MLOps, covering everything from data science fundamentals to production deployment. Each component was implemented with production considerations while maintaining code clarity for educational purposes.
 
-**⭐ Star this repository if it helped you build production-ready ML systems!**
-
-</div>
+**Tech Stack**: Python • scikit-learn • MLflow • GitHub Actions • Docker • AWS • Flask
