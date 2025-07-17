@@ -1,4 +1,4 @@
-# Dockerfile - Simple version for student project
+# Dockerfile - FastAPI version
 FROM python:3.11-slim
 
 # Set working directory
@@ -23,12 +23,11 @@ RUN mkdir -p artifacts logs
 EXPOSE 8080
 
 # Set environment variables
-ENV FLASK_APP=app.py
 ENV PYTHONPATH=/app
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s \
     CMD curl -f http://localhost:8080/health || exit 1
 
-# Start command
-CMD ["python", "app.py"]
+# Start FastAPI with uvicorn
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
