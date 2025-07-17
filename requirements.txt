@@ -1,16 +1,32 @@
-pandas
-numpy
-matplotlib
+# Core ML libraries
+pandas==2.0.3
+numpy==1.24.3
 scikit-learn==1.4.2
-seaborn
-imbalanced-learn
-plotly
-dill
-flask
-jinja2
-uvicorn
-fastapi
-pydantic
-mlflow
-boto3
+matplotlib==3.7.1
+seaborn==0.12.2
+
+# Web framework - FastAPI
+fastapi==0.103.1
+uvicorn[standard]==0.23.2
+jinja2==3.1.2
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# MLflow for experiment tracking
+mlflow==2.5.0
+
+# Data processing
+imbalanced-learn==0.11.0
+
+# Utilities
+dill==0.3.6
+
+# Development tools (optional)
+pytest==7.4.0
+flake8==6.0.0
+
+# AWS SDK (for future deployment)
+boto3==1.28.25
+
+# Package installation
 -e .
