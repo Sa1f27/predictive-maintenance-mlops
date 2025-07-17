@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from src.components.data_transformation import DataTransformetaionConfig
 from src.components.data_transformation import DataTransformetaion
 
-from src.components.model_trainer import ModelConfig
+from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
 
 @dataclass

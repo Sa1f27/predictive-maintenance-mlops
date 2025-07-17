@@ -11,4 +11,6 @@ jinja2
 uvicorn
 fastapi
 pydantic
+mlflow
+boto3
 -e .
