@@ -32,7 +32,7 @@ class ModelEvaluator:
             self.load_artifacts()
             
             # Prepare test data
-            target_column = "Machine failure"
+            target_column = "Target"
             X_test = self.test_data.drop(columns=[target_column])
             y_test = self.test_data[target_column]
             

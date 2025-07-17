@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/420889418952072685/102cb1148f554d87bc11db9219c09578/artifacts
+end_time: 1752745272179
+entry_point_name: ''
+experiment_id: '420889418952072685'
+lifecycle_stage: active
+run_id: 102cb1148f554d87bc11db9219c09578
+run_name: peaceful-dolphin-836
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752745264539
+status: 4
+tags: []
+user_id: DELL 3410

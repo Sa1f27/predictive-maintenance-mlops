@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/420889418952072685/2e2b085ac7b14cd7bafbcc2da1505ccd/artifacts
+end_time: 1752745255407
+entry_point_name: ''
+experiment_id: '420889418952072685'
+lifecycle_stage: active
+run_id: 2e2b085ac7b14cd7bafbcc2da1505ccd
+run_name: bemused-panda-918
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752745243993
+status: 4
+tags: []
+user_id: DELL 3410

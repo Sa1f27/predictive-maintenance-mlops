@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/420889418952072685/cc5563ce5b86416287e8ddad83cb23c9/artifacts
+end_time: 1752745264480
+entry_point_name: ''
+experiment_id: '420889418952072685'
+lifecycle_stage: active
+run_id: cc5563ce5b86416287e8ddad83cb23c9
+run_name: gentle-mouse-921
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752745255451
+status: 4
+tags: []
+user_id: DELL 3410

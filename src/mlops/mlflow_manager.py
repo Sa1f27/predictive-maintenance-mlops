@@ -50,7 +50,7 @@ class MLflowManager:
                 # Log model
                 mlflow.sklearn.log_model(
                     sk_model=model,
-                    artifact_path="model",
+                    name="model",
                     registered_model_name=f"maintenance_predictor_{model_name.lower().replace(' ', '_')}"
                 )
                 
@@ -58,7 +58,7 @@ class MLflowManager:
                 if artifacts_dict:
                     for artifact_name, artifact_path in artifacts_dict.items():
                         if os.path.exists(artifact_path):
-                            mlflow.log_artifact(artifact_path, artifact_path=artifact_name)
+                            mlflow.log_artifact(artifact_path, name=artifact_name)
                 
                 run_id = mlflow.active_run().info.run_id
                 logging.info(f"Model {model_name} logged to MLflow with run_id: {run_id}")
