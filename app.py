@@ -1,17 +1,28 @@
-# app.py - FIXED VERSION
+from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import numpy as np
 import pandas as pd
-from flask import Flask, request, render_template, jsonify
 import os
 from datetime import datetime
 import traceback
+from pydantic import BaseModel
 
 from src.pipeline.predict_pipeline import CustomData, PredictPipeline
 from src.logger import logging
 from src.exception import CustomException
 
-application = Flask(__name__)
-app = application
+# Create FastAPI app
+app = FastAPI(
+    title="Predictive Maintenance System",
+    description="ML-powered equipment failure prediction",
+    version="1.0.0"
+)
+
+# Mount static files and templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 # Initialize prediction pipeline globally
 predict_pipeline = None
@@ -27,53 +38,79 @@ def initialize_pipeline():
         logging.error(f"Failed to initialize prediction pipeline: {str(e)}")
         return False
 
-@app.route('/')
-def index():
-    """Landing page"""
-    return render_template('index.html')
+# Pydantic models for API
+class PredictionRequest(BaseModel):
+    Type: str
+    Air_temperature: float
+    Process_temperature: float
+    Rotational_speed: int
+    Torque: float
+    Tool_wear: int
 
-@app.route('/predictdata', methods=['GET', 'POST'])
-def predict_datapoint():
-    """Main prediction endpoint"""
-    if request.method == 'GET':
-        return render_template('home.html')
+class PredictionResponse(BaseModel):
+    prediction: int
+    failure_risk: str
+    confidence: float = None
+    timestamp: str
+    model_version: str = "v1.0.0"
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize pipeline on startup"""
+    logging.info("Starting FastAPI application...")
     
+    # Check if training is needed
+    if not os.path.exists("artifacts/model.pkl"):
+        logging.warning("Model artifacts not found. Please run training first:")
+        logging.warning("python run_pipeline.py --mode train")
+    else:
+        initialize_pipeline()
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    """Landing page"""
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/predictdata", response_class=HTMLResponse)
+async def predict_form(request: Request):
+    """Show prediction form"""
+    return templates.TemplateResponse("home.html", {"request": request})
+
+@app.post("/predictdata", response_class=HTMLResponse)
+async def predict_datapoint(
+    request: Request,
+    Type: str = Form(...),
+    Air_temperature_K: float = Form(...),
+    Process_temperature_K: float = Form(...),
+    Rotational_speed_rpm: int = Form(...),
+    Torque_Nm: float = Form(...),
+    Tool_wear_min: int = Form(...)
+):
+    """Main prediction endpoint for web form"""
     try:
         # Initialize pipeline if not already done
         if predict_pipeline is None:
             if not initialize_pipeline():
-                return render_template('home.html', 
-                    results="❌ ERROR: Prediction system not available. Please ensure models are trained.")
+                return templates.TemplateResponse("home.html", {
+                    "request": request,
+                    "results": "❌ ERROR: Prediction system not available. Please ensure models are trained."
+                })
 
-        # Extract and validate form data
-        form_data = {
-            'Type': request.form.get('Type'),
-            'Air_temperature': request.form.get('Air_temperature_K'),
-            'Process_temperature': request.form.get('Process_temperature_K'),
-            'Rotational_speed': request.form.get('Rotational_speed_rpm'),
-            'Torque': request.form.get('Torque_Nm'),
-            'Tool_wear': request.form.get('Tool_wear_min')
-        }
-        
-        # Validate required fields
-        missing_fields = [key for key, value in form_data.items() if not value]
-        if missing_fields:
-            return render_template('home.html', 
-                results=f"❌ ERROR: Missing required fields: {', '.join(missing_fields)}")
-
-        # Convert and validate numeric fields
+        # Create CustomData object
         try:
             data = CustomData(
-                Type=form_data['Type'],
-                Air_temperature=float(form_data['Air_temperature']),
-                Process_temperature=float(form_data['Process_temperature']),
-                Rotational_speed=int(form_data['Rotational_speed']),
-                Torque=float(form_data['Torque']),
-                Tool_wear=int(form_data['Tool_wear'])
+                Type=Type,
+                Air_temperature=Air_temperature_K,
+                Process_temperature=Process_temperature_K,
+                Rotational_speed=Rotational_speed_rpm,
+                Torque=Torque_Nm,
+                Tool_wear=Tool_wear_min
             )
         except (ValueError, TypeError) as e:
-            return render_template('home.html', 
-                results="❌ ERROR: Invalid input values. Please check your numeric inputs.")
+            return templates.TemplateResponse("home.html", {
+                "request": request,
+                "results": "❌ ERROR: Invalid input values. Please check your numeric inputs."
+            })
         
         # Convert to DataFrame
         pred_df = data.get_data_as_data_frame()
@@ -110,21 +147,30 @@ def predict_datapoint():
         }
         logging.info(f"Prediction logged: {log_entry}")
         
-        return render_template('home.html', results=prediction_result)
+        return templates.TemplateResponse("home.html", {
+            "request": request,
+            "results": prediction_result
+        })
         
     except CustomException as e:
         error_msg = f"❌ Prediction Error: {str(e)}"
         logging.error(error_msg)
-        return render_template('home.html', results=error_msg)
+        return templates.TemplateResponse("home.html", {
+            "request": request,
+            "results": error_msg
+        })
     
     except Exception as e:
         error_msg = f"❌ Unexpected Error: Please check your input values and try again."
         logging.error(f"Unexpected error in prediction: {str(e)}")
         logging.error(f"Traceback: {traceback.format_exc()}")
-        return render_template('home.html', results=error_msg)
+        return templates.TemplateResponse("home.html", {
+            "request": request,
+            "results": error_msg
+        })
 
-@app.route('/health')
-def health_check():
+@app.get("/health")
+async def health_check():
     """Health check endpoint for monitoring"""
     try:
         health_status = {
@@ -166,84 +212,64 @@ def health_check():
         
         health_status["status"] = "healthy" if all_healthy else "degraded"
         
-        return jsonify(health_status), 200 if all_healthy else 503
+        return health_status
         
     except Exception as e:
         logging.error(f"Health check failed: {str(e)}")
-        return jsonify({
-            "status": "error", 
-            "message": str(e),
-            "timestamp": datetime.now().isoformat()
-        }), 500
+        raise HTTPException(status_code=500, detail=f"Health check failed: {str(e)}")
 
-@app.route('/api/predict', methods=['POST'])
-def api_predict():
+@app.post("/api/predict", response_model=PredictionResponse)
+async def api_predict(request: PredictionRequest):
     """REST API endpoint for predictions"""
     try:
         if predict_pipeline is None:
             if not initialize_pipeline():
-                return jsonify({
-                    "error": "Prediction system not available",
-                    "message": "Models not trained or artifacts missing"
-                }), 503
-
-        # Get JSON data
-        json_data = request.get_json()
-        if not json_data:
-            return jsonify({"error": "No JSON data provided"}), 400
+                raise HTTPException(
+                    status_code=503, 
+                    detail="Prediction system not available. Models not trained or artifacts missing."
+                )
 
         # Create CustomData object
         data = CustomData(
-            Type=json_data.get('Type'),
-            Air_temperature=float(json_data.get('Air_temperature')),
-            Process_temperature=float(json_data.get('Process_temperature')),
-            Rotational_speed=int(json_data.get('Rotational_speed')),
-            Torque=float(json_data.get('Torque')),
-            Tool_wear=int(json_data.get('Tool_wear'))
+            Type=request.Type,
+            Air_temperature=request.Air_temperature,
+            Process_temperature=request.Process_temperature,
+            Rotational_speed=request.Rotational_speed,
+            Torque=request.Torque,
+            Tool_wear=request.Tool_wear
         )
         
         # Make prediction
         pred_df = data.get_data_as_data_frame()
         results, confidence = predict_pipeline.predict(pred_df)
         
-        # Return JSON response
-        response = {
-            "prediction": int(results[0]),
-            "failure_risk": "High" if results[0] == 1 else "Low",
-            "confidence": float(confidence) if confidence else None,
-            "timestamp": datetime.now().isoformat(),
-            "model_version": "v1.0.0"
-        }
-        
-        return jsonify(response), 200
+        # Return response
+        return PredictionResponse(
+            prediction=int(results[0]),
+            failure_risk="High" if results[0] == 1 else "Low",
+            confidence=float(confidence) if confidence else None,
+            timestamp=datetime.now().isoformat()
+        )
         
     except Exception as e:
         logging.error(f"API prediction failed: {str(e)}")
-        return jsonify({
-            "error": "Prediction failed",
-            "message": str(e)
-        }), 500
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('index.html'), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    logging.error(f"Internal server error: {str(error)}")
-    return jsonify({"error": "Internal server error"}), 500
+@app.get("/docs")
+async def get_docs():
+    """Redirect to API documentation"""
+    from fastapi.openapi.docs import get_swagger_ui_html
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="API Documentation")
 
 if __name__ == "__main__":
-    # Initialize pipeline on startup
-    logging.info("Starting Flask application...")
+    import uvicorn
     
-    # Check if training is needed
-    if not os.path.exists("artifacts/model.pkl"):
-        logging.warning("Model artifacts not found. Please run training first:")
-        logging.warning("python run_pipeline.py --mode train")
-    else:
-        initialize_pipeline()
-    
-    # Run the application
+    # Get port from environment or default to 8080
     port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    
+    print("🚀 Starting Predictive Maintenance FastAPI Application")
+    print(f"🌐 Access at: http://localhost:{port}")
+    print(f"📋 API Docs at: http://localhost:{port}/docs")
+    print(f"🔍 Health Check at: http://localhost:{port}/health")
+    
+    uvicorn.run(app, host="0.0.0.0", port=port)
