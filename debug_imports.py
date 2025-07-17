@@ -1,117 +1,122 @@
-# debug_imports.py - Diagnose import issues
+# debug_current_state.py - Show exactly what's in your project
 import os
 import sys
-import importlib.util
 
-def check_file_exists(file_path):
-    """Check if file exists and print its size"""
-    if os.path.exists(file_path):
-        size = os.path.getsize(file_path)
-        print(f"✅ {file_path} exists ({size} bytes)")
-        return True
-    else:
-        print(f"❌ {file_path} MISSING")
-        return False
-
-def check_class_in_file(file_path, class_name):
-    """Check if a class exists in a Python file"""
+def debug_project_structure():
+    print("🔍 DEBUGGING PROJECT STRUCTURE - NO BULLSHIT")
+    print("=" * 60)
+    
+    # Current working directory
+    cwd = os.getcwd()
+    print(f"📁 Current working directory: {cwd}")
+    
+    # List root directory contents
+    print(f"\n📂 Root directory contents:")
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
-            if f"class {class_name}" in content:
-                print(f"✅ Class '{class_name}' found in {file_path}")
-                return True
+        root_files = os.listdir('.')
+        for item in sorted(root_files):
+            if os.path.isdir(item):
+                print(f"   📁 {item}/")
             else:
-                print(f"❌ Class '{class_name}' NOT found in {file_path}")
-                # Show what classes are actually there
-                lines = content.split('\n')
-                classes = [line.strip() for line in lines if line.strip().startswith('class ')]
-                if classes:
-                    print(f"   Available classes: {classes}")
+                print(f"   📄 {item}")
+    except Exception as e:
+        print(f"   ❌ Error reading root: {e}")
+    
+    # Check for Data directory (with capital D)
+    print(f"\n🔍 Checking for Data directory:")
+    data_dirs_to_check = ['Data', 'data', 'DATA']
+    
+    for data_dir in data_dirs_to_check:
+        if os.path.exists(data_dir):
+            print(f"   ✅ Found: {data_dir}/")
+            try:
+                files = os.listdir(data_dir)
+                print(f"      Contents: {files}")
+                
+                # Check specifically for CSV files
+                csv_files = [f for f in files if f.endswith('.csv')]
+                if csv_files:
+                    print(f"      📊 CSV files: {csv_files}")
+                    
+                    # Show details of each CSV
+                    for csv_file in csv_files:
+                        csv_path = os.path.join(data_dir, csv_file)
+                        size = os.path.getsize(csv_path)
+                        print(f"         📄 {csv_file}: {size:,} bytes")
                 else:
-                    print("   No classes found in file")
-                return False
-    except Exception as e:
-        print(f"❌ Error reading {file_path}: {e}")
-        return False
-
-def try_import(module_path, class_name):
-    """Try to import a class and show the error"""
-    try:
-        module = importlib.import_module(module_path)
-        if hasattr(module, class_name):
-            print(f"✅ Successfully imported {class_name} from {module_path}")
-            return True
+                    print(f"      ⚠️  No CSV files found")
+            except Exception as e:
+                print(f"      ❌ Error reading {data_dir}: {e}")
         else:
-            print(f"❌ {class_name} not found in {module_path}")
-            available = [attr for attr in dir(module) if not attr.startswith('_')]
-            print(f"   Available: {available}")
-            return False
-    except Exception as e:
-        print(f"❌ Import error for {module_path}: {e}")
-        return False
-
-def main():
-    print("🔍 DEBUGGING IMPORT ISSUES")
-    print("="*60)
+            print(f"   ❌ Not found: {data_dir}/")
     
-    # Check required files exist
-    print("\n📁 CHECKING FILE EXISTENCE:")
-    files_to_check = [
-        "src/__init__.py",
-        "src/components/__init__.py", 
-        "src/components/data_ingestion.py",
-        "src/components/data_transformation.py",
-        "src/components/model_trainer.py",
-        "src/pipeline/__init__.py",
-        "src/pipeline/train_pipeline.py",
-        "src/pipeline/predict_pipeline.py",
-        "src/utils.py",
-        "src/exception.py",
-        "src/logger.py"
-    ]
+    # Check the exact path from your original code
+    original_path = r'Data\predictive_maintenance.csv'
+    print(f"\n🎯 Checking your original path: {original_path}")
+    if os.path.exists(original_path):
+        size = os.path.getsize(original_path)
+        print(f"   ✅ File exists! Size: {size:,} bytes")
+        
+        # Try to read first few lines
+        try:
+            import pandas as pd
+            df = pd.read_csv(original_path, nrows=5)
+            print(f"   📊 Columns: {list(df.columns)}")
+            print(f"   📊 Shape (first 5 rows): {df.shape}")
+            print(f"   📊 Sample data:")
+            print(df.head())
+        except Exception as e:
+            print(f"   ❌ Error reading CSV: {e}")
+    else:
+        print(f"   ❌ File does NOT exist at this path!")
     
-    missing_files = []
-    for file_path in files_to_check:
-        if not check_file_exists(file_path):
-            missing_files.append(file_path)
+    # Check artifacts directory
+    print(f"\n📂 Checking artifacts directory:")
+    if os.path.exists('artifacts'):
+        files = os.listdir('artifacts')
+        print(f"   ✅ Exists, contents: {files}")
+        
+        for file in files:
+            if file.endswith('.csv') or file.endswith('.pkl'):
+                size = os.path.getsize(os.path.join('artifacts', file))
+                print(f"      📄 {file}: {size:,} bytes")
+    else:
+        print(f"   ❌ artifacts/ directory does not exist")
     
-    if missing_files:
-        print(f"\n⚠️  Create these missing files: {missing_files}")
+    # Check if there are any CSV files anywhere
+    print(f"\n🔍 Searching for ALL CSV files in project:")
+    csv_files_found = []
     
-    # Check classes exist in files
-    print("\n🔍 CHECKING CLASS DEFINITIONS:")
-    class_checks = [
-        ("src/components/data_ingestion.py", "DataIngestion"),
-        ("src/components/data_transformation.py", "DataTransformation"), 
-        ("src/components/model_trainer.py", "ModelTrainer"),
-    ]
+    for root, dirs, files in os.walk('.'):
+        # Skip hidden directories and common build directories
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'node_modules']]
+        
+        for file in files:
+            if file.endswith('.csv'):
+                full_path = os.path.join(root, file)
+                size = os.path.getsize(full_path)
+                csv_files_found.append((full_path, size))
     
-    for file_path, class_name in class_checks:
-        if os.path.exists(file_path):
-            check_class_in_file(file_path, class_name)
+    if csv_files_found:
+        print(f"   📊 Found {len(csv_files_found)} CSV files:")
+        for path, size in csv_files_found:
+            print(f"      📄 {path}: {size:,} bytes")
+    else:
+        print(f"   ❌ NO CSV files found anywhere in the project!")
     
-    # Try actual imports
-    print("\n🔧 TESTING IMPORTS:")
-    import_tests = [
-        ("src.components.data_ingestion", "DataIngestion"),
-        ("src.components.data_transformation", "DataTransformation"),
-        ("src.components.model_trainer", "ModelTrainer"),
-    ]
+    print("=" * 60)
+    print("🎯 CONCLUSION:")
     
-    for module_path, class_name in import_tests:
-        try_import(module_path, class_name)
-    
-    print("\n" + "="*60)
-    print("🎯 QUICK FIXES:")
-    print("1. Create missing __init__.py files:")
-    print("   touch src/__init__.py")
-    print("   touch src/components/__init__.py") 
-    print("   touch src/pipeline/__init__.py")
-    print("   touch src/mlops/__init__.py")
-    print("\n2. Check class names match exactly in your files")
-    print("3. Make sure no syntax errors in Python files")
-    print("="*60)
+    if os.path.exists(original_path):
+        print(f"✅ Your dataset exists at the expected location")
+        print(f"✅ The training should work with real data")
+    else:
+        print(f"❌ Your dataset is MISSING from the expected location")
+        print(f"❌ You need to place 'predictive_maintenance.csv' in the 'Data' directory")
+        if csv_files_found:
+            print(f"💡 But I found other CSV files - maybe one of these is your dataset?")
+        else:
+            print(f"💡 No CSV files found anywhere - you need to add your dataset")
 
 if __name__ == "__main__":
-    main()
+    debug_project_structure()
