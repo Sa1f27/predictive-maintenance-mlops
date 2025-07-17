@@ -1,0 +1,44 @@
+# docker-compose.yml - Simple version
+version: '3.8'
+
+services:
+  # MLflow tracking server
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    command: >
+      mlflow server 
+      --host 0.0.0.0 
+      --port 5000 
+      --backend-store-uri sqlite:///mlflow.db
+    volumes:
+      - mlflow_data:/mlflow
+    networks:
+      - mlops
+
+  # Main application
+  app:
+    build: .
+    container_name: predictive-maintenance-app
+    ports:
+      - "8080:8080"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
+    volumes:
+      - ./Data:/app/Data
+      - ./artifacts:/app/artifacts
+      - ./logs:/app/logs
+    networks:
+      - mlops
+    restart: unless-stopped
+
+volumes:
+  mlflow_data:
+
+networks:
+  mlops:
+    driver: bridge

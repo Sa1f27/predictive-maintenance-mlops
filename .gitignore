@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+mlartifacts/
+mlruns/
+logs/
 
 # C extensions
 *.so
