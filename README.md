@@ -10,7 +10,7 @@ This project addresses a real-world industrial challenge: **predicting equipment
 
 ### 🎯 Key Achievements
 - **88-92% accuracy** in failure prediction across different equipment types
-- **Real-time inference** with <100ms response time
+- **Real-time inference** Optimized for scalable predictions
 - **Complete MLOps pipeline** from data ingestion to production deployment
 - **Comprehensive monitoring** with MLflow experiment tracking
 
@@ -254,11 +254,11 @@ predictive-maintenance-mlops/
 - [ ] Enhanced monitoring dashboards
 
 ### Long Term
-- [ ] Deep learning models for time series analysis
-- [ ] Multi-variate anomaly detection
-- [ ] Edge deployment with AWS IoT Greengrass
-- [ ] Advanced AutoML with SageMaker integration
-- [ ] Real-time streaming with Kinesis
+- [ ] Deep learning models with ensemble stacking for time series analysis
+- [ ] Real-time data streaming with automated retraining pipeline
+- [ ] Edge deployment with load testing and performance tuning
+- [ ] Advanced hyperparameter optimization with A/B testing framework
+- [ ] Integrated Prometheus & Grafana for robust monitoring and alerting
 
 ### Development Process
 1. **Research Phase**: Industrial maintenance literature review
@@ -268,7 +268,8 @@ predictive-maintenance-mlops/
 5. **Testing & Deployment**: Comprehensive validation and containerization
 6. **Documentation**: Technical and user documentation
 
+---
 
 > **Note**: This project demonstrates end-to-end MLOps implementation, covering data science fundamentals through production deployment. Each component was built with scalability and maintainability in mind while ensuring code clarity and documentation.
 
-**Tech Stack**: Python • scikit-learn • MLflow • FastAPI • Docker • AWS (ECS, ECR, S3, CloudWatch) • GitHub Actions
+**Tech Stack**: Python • scikit-learn • MLflow • FastAPI • Docker • AWS (ECS, ECR, S3) • GitHub Actions 
