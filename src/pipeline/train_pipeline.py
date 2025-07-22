@@ -58,7 +58,7 @@ class TrainingPipeline:
             # Stage 3: Model Training
             logging.info("STAGE 3: Model Training Started")
             model_trainer = ModelTrainer()
-            accuracy_score = model_trainer.initiate_model_training(train_arr, test_arr)
+            accuracy_score, model_report = model_trainer.initiate_model_training(train_arr, test_arr)
             
             # Validate model training outputs
             model_path = "artifacts/model.pkl"
@@ -92,6 +92,7 @@ class TrainingPipeline:
                 "test_data_path": test_data_path,
                 "preprocessor_path": preprocessor_path,
                 "model_accuracy": accuracy_score,
+                "model_report": model_report,
                 "artifacts": self.get_artifact_paths(),
                 "summary": summary
             }
@@ -254,17 +255,14 @@ if __name__ == "__main__":
         
         print("\n" + "="*80)
         print("🎉 TRAINING PIPELINE COMPLETED SUCCESSFULLY! 🎉")
+        print("--- Training Complete ---")
+        print(f"Best model accuracy: {result['model_accuracy']:.4f}")
+        print("Performance of All Models:")
+        print(result['model_report'])
         print("="*80)
-        print(f"📊 Model Accuracy: {result['model_accuracy']:.4f}")
         print(f"📁 Artifacts created in: ./artifacts/")
         print(f"🔗 MLflow UI: http://localhost:5000")
-        print("="*80)
         print("\n🚀 Ready to run Flask app: python app.py")
-        
-        # Print detailed summary
-        print("\n📋 PIPELINE SUMMARY:")
-        for key, value in result['summary'].items():
-            print(f"   {key}: {value}")
         
     except Exception as e:
         print(f"\n❌ Training Pipeline Failed: {str(e)}")

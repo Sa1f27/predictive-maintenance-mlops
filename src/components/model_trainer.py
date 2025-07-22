@@ -13,9 +13,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 from src.exception import CustomException
 from src.logger import logging
-from src.utils import save_object, evaluate_models
+from src.utils import save_object, evaluate_models, load_object
 from src.mlops.mlflow_manager import MLflowManager
 from mlflow.models.signature import infer_signature
+from imblearn.over_sampling import SMOTE
 
 @dataclass
 class ModelTrainerConfig:
@@ -41,6 +42,12 @@ class ModelTrainer:
                 test_array[:, :-1],
                 test_array[:, -1]
             )
+
+            # Apply SMOTE to the training data to handle class imbalance
+            logging.info("Applying SMOTE to balance the training data")
+            smote = SMOTE(random_state=42)
+            X_train, y_train = smote.fit_resample(X_train, y_train)
+            logging.info(f"Shape of training data after SMOTE: X_train={X_train.shape}")
 
             models = {
                 "Random Forest": RandomForestClassifier(random_state=42),
@@ -82,6 +89,8 @@ class ModelTrainer:
                 param=params
             )
 
+            logging.info(f"Full model evaluation report: {model_report}")
+
             best_model_score = max(sorted(model_report.values()))
             best_model_name = list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
@@ -97,6 +106,29 @@ class ModelTrainer:
             gs = GridSearchCV(models[best_model_name], params[best_model_name], cv=3, scoring='accuracy')
             gs.fit(X_train, y_train)
             best_model = gs.best_estimator_
+
+            # --- ADDED: Feature Importance Calculation ---
+            if hasattr(best_model, 'feature_importances_'):
+                try:
+                    preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
+                    preprocessing_obj = load_object(file_path=preprocessor_path)
+                    
+                    # Get feature names from the preprocessor
+                    num_feature_names = preprocessing_obj.named_transformers_['num_pipeline'].get_feature_names_out().tolist()
+                    cat_feature_names = preprocessing_obj.named_transformers_['cat_pipeline']['one_hot_encoder'].get_feature_names_out().tolist()
+                    all_feature_names = num_feature_names + cat_feature_names
+
+                    importances = best_model.feature_importances_
+                    feature_importance_df = pd.DataFrame(
+                        list(zip(all_feature_names, importances)),
+                        columns=['feature', 'importance']
+                    ).sort_values(by='importance', ascending=False)
+
+                    logging.info("--- Feature Importances ---")
+                    logging.info(f"\n{feature_importance_df}")
+
+                except Exception as e:
+                    logging.warning(f"Could not calculate and log feature importances: {e}")
 
             y_train_pred = best_model.predict(X_train)
             y_test_pred = best_model.predict(X_test)
@@ -170,7 +202,7 @@ class ModelTrainer:
                 except Exception as e:
                     logging.warning(f"MLflow logging failed: {e}")
 
-            return test_accuracy
+            return test_accuracy, model_report
 
         except Exception as e:
             raise CustomException(e, sys)
