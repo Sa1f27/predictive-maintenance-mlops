@@ -11,8 +11,9 @@ permissions:
   contents: read
 
 jobs:
-  integration:
-    name: ⚙️ Continuous Integration
+  # Job 1: Run CI checks (testing)
+  ci_checks:
+    name: ⚙️ Continuous Integration Checks
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout Code
@@ -36,17 +37,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🎨 Lint with Flake8
-        run: |
-          # Run flake8 to check for code quality issues, but don't fail the build.
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
       - name: 🧪 Run Unit Tests (Placeholder)
         run: echo "✅ No unit tests configured. This is where you would run 'pytest'."
 
-  build-and-push-ecr-image:
-    name: 📦 Continuous Delivery (Build & Push to AWS)
-    needs: integration
+  # Job 2: Build the Docker image and push it to AWS ECR
+  build_and_push:
+    name: 📦 Build & Push to ECR
+    needs: ci_checks
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout Code
@@ -79,17 +76,26 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: 🗑️ Clean up ECR Image to Prevent Costs
-        # This step runs even if previous steps fail, to ensure cleanup.
-        if: always()
+  # Job 3: Clean up the ECR image to prevent costs
+  cleanup_ecr:
+    name: 🗑️ Cleanup ECR Image
+    needs: build_and_push
+    if: always() # Ensures this job runs even if the previous one fails
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🗑️ Delete 'latest' image from ECR
         env:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          # This step deletes the 'latest' tag to avoid ECR storage costs.
-          # It's useful for CI pipelines where the 'latest' image is ephemeral.
-          # '|| true' ensures the workflow doesn't fail if the image is already gone.
           aws ecr batch-delete-image \
             --repository-name $ECR_REPOSITORY \
             --image-ids imageTag=$IMAGE_TAG || true

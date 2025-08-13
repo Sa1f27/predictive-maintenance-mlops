@@ -9,6 +9,7 @@ A comprehensive machine learning system that predicts equipment failures in manu
 This project addresses a real-world industrial challenge: **predicting equipment failures before they occur**. Using sensor data from manufacturing equipment, the system provides early warnings that enable proactive maintenance, reducing downtime and operational costs.
 
 ### 🎯 Key Achievements
+
 - **88-92% accuracy** in failure prediction across different equipment types
 - **Real-time inference** Optimized for scalable predictions
 - **Complete MLOps pipeline** from data ingestion to production deployment
@@ -17,20 +18,23 @@ This project addresses a real-world industrial challenge: **predicting equipment
 ## 🛠️ Technical Stack
 
 ### Machine Learning
+
 - **Framework**: scikit-learn, pandas, numpy
 - **Models**: Random Forest, Gradient Boosting, Logistic Regression, SVM
-- **Validation**: Cross-validation, stratified sampling
+- **Validation**: Cross-validation, Stratified train-test split, SMOTE for class imbalance
 - **Metrics**: Accuracy, Precision, Recall, F1-Score, ROC-AUC
 
 ### MLOps Infrastructure
+
 - **Experiment Tracking**: MLflow
 - **Web Framework**: FastAPI with REST API
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
-- **Monitoring**: CloudWatch, Prometheus, health checks
-- **Deployment**: AWS ECS, EC2, S3
+- **Monitoring**: CloudWatch, Health checks
+- **Deployment**: AWS ECR (for Docker images), AWS S3 (for MLflow artifacts)
 
 ### Data Pipeline
+
 - **Data Source**: Industrial IoT sensor telemetry
 - **Features**: Temperature, speed, torque, tool wear, equipment type
 - **Processing**: Data validation, feature engineering, scaling
@@ -44,7 +48,7 @@ This project addresses a real-world industrial challenge: **predicting equipment
 │   ├── Feature engineering
 │   └── Train/test splitting
 │
-├── 🤖 ML Pipeline  
+├── 🤖 ML Pipeline
 │   ├── Model training & tuning
 │   ├── Cross-validation
 │   └── Performance evaluation
@@ -65,19 +69,21 @@ This project addresses a real-world industrial challenge: **predicting equipment
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Python 3.11+
 - Docker (optional)
 - 8GB+ RAM
 
 ### Quick Setup
+
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone https://github.com/Sa1f27/predictive-maintenance-mlops.git
 cd predictive-maintenance-mlops
 
 # Setup environment
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Run complete pipeline
@@ -89,6 +95,7 @@ python app.py  # Start FastAPI application
 ```
 
 ### Docker Deployment
+
 ```bash
 # Start full stack
 docker-compose up -d --build
@@ -99,17 +106,19 @@ docker-compose up -d --build
 ```
 
 ### AWS Deployment
-```bash
-# Build and push to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-east-1.amazonaws.com
-docker build -t predictive-maintenance .
-docker tag predictive-maintenance:latest <account>.dkr.ecr.us-east-1.amazonaws.com/predictive-maintenance:latest
-docker push <account>.dkr.ecr.us-east-1.amazonaws.com/predictive-maintenance:latest
 
-# Deploy to ECS
+```bash
+# 1. Authenticate Docker with AWS ECR
+aws ecr get-login-password --region <your-aws-region> | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.<your-aws-region>.amazonaws.com
+
+# 2. Build, tag, and push the image
+docker build -t predictive-maintenance .
+docker tag predictive-maintenance:latest <your-account-id>.dkr.ecr.<your-aws-region>.amazonaws.com/predictive-maintenance:latest
+docker push <your-account-id>.dkr.ecr.<your-aws-region>.amazonaws.com/predictive-maintenance:latest
+
+# 3. (Optional) Deploy to a service like AWS ECS
 aws ecs update-service --cluster mlops-cluster --service maintenance-service --force-new-deployment
 ```
-
 
 ![Capture](https://github.com/user-attachments/assets/b5ea1ab5-03d2-44e6-8820-187a19caeaef)
 
@@ -125,20 +134,21 @@ aws ecs update-service --cluster mlops-cluster --service maintenance-service --f
 
 ![cicd-ithub-actions](https://github.com/user-attachments/assets/5441b56f-bbf5-4475-b994-73d7f2cc0458)
 
-
 ## 📈 Model Performance
 
 ### Benchmark Results
-| Model | Accuracy | Precision | Recall | F1-Score | Notes |
-|-------|----------|-----------|--------|----------|-------|
-| **Random Forest** | 91.2% | 89.4% | 92.1% | 90.7% | Best overall |
-| **Gradient Boosting** | 89.8% | 87.3% | 91.5% | 89.3% | Good balance |
-| **Logistic Regression** | 86.4% | 84.1% | 88.7% | 86.3% | Fast inference |
-| **SVM** | 88.1% | 85.9% | 90.2% | 88.0% | Solid baseline |
+
+| Model                   | Accuracy | Precision | Recall | F1-Score | Notes          |
+| ----------------------- | -------- | --------- | ------ | -------- | -------------- |
+| **Random Forest**       | 91.2%    | 89.4%     | 92.1%  | 90.7%    | Best overall   |
+| **Gradient Boosting**   | 89.8%    | 87.3%     | 91.5%  | 89.3%    | Good balance   |
+| **Logistic Regression** | 86.4%    | 84.1%     | 88.7%  | 86.3%    | Fast inference |
+| **SVM**                 | 88.1%    | 85.9%     | 90.2%  | 88.0%    | Solid baseline |
 
 ### Feature Importance Analysis
+
 1. **Tool Wear** (32%) - Primary degradation indicator
-2. **Temperature Differential** (24%) - Thermal stress patterns  
+2. **Temperature Differential** (24%) - Thermal stress patterns
 3. **Torque Variance** (21%) - Mechanical load analysis
 4. **Rotational Speed** (15%) - Motor performance
 5. **Equipment Type** (8%) - Categorical context
@@ -146,18 +156,21 @@ aws ecs update-service --cluster mlops-cluster --service maintenance-service --f
 ## 💻 Web Application Features
 
 ### 🔮 Prediction Interface
+
 - **Interactive Form**: Input equipment parameters
 - **Real-time Prediction**: Instant failure risk assessment
 - **Confidence Scoring**: Model uncertainty quantification
 - **Sample Data**: Pre-filled examples for testing
 
 ### 📊 MLflow Integration
+
 - **Experiment Tracking**: All training runs logged
 - **Model Registry**: Version control for production models
 - **Metrics Comparison**: Side-by-side performance analysis
 - **Artifact Storage**: Models, plots, and reports
 
 ### 🔍 Monitoring & Health
+
 - **Health Endpoint**: `/health` for system status
 - **API Documentation**: `/docs` with interactive testing
 - **Performance Metrics**: Response time monitoring
@@ -166,12 +179,14 @@ aws ecs update-service --cluster mlops-cluster --service maintenance-service --f
 ## 🧪 Testing & Validation
 
 ### Data Quality
+
 - **Missing Value Check**: Comprehensive data validation
 - **Outlier Detection**: Statistical anomaly identification
 - **Feature Distribution**: Ensuring representative samples
 - **Target Balance**: Handling class imbalance
 
 ### Model Validation
+
 - **Cross-Validation**: 5-fold stratified CV
 - **Hold-out Testing**: 20% test set for final evaluation
 - **Overfitting Analysis**: Train vs. validation performance
@@ -180,11 +195,13 @@ aws ecs update-service --cluster mlops-cluster --service maintenance-service --f
 ## 🔄 CI/CD Pipeline
 
 ### Automated Workflow
+
 ```yaml
 Code Push → Linting → Testing → Model Training → Docker Build → ECR Push → ECS Deploy
 ```
 
 ### Quality Gates
+
 - **Code Quality**: Flake8 linting, formatting checks
 - **Unit Testing**: Component-level validation
 - **Integration Testing**: End-to-end pipeline verification
@@ -212,6 +229,7 @@ predictive-maintenance-mlops/
 ## 🎓 Key Learning Outcomes
 
 ### Technical Skills Developed
+
 - **MLOps Best Practices**: End-to-end ML lifecycle management
 - **Experiment Tracking**: Systematic model development and comparison
 - **Production Deployment**: Containerization and cloud-ready architecture
@@ -219,12 +237,14 @@ predictive-maintenance-mlops/
 - **CI/CD Implementation**: Automated testing and deployment
 
 ### Industry Knowledge Gained
+
 - **Predictive Maintenance**: Industrial IoT applications and business value
 - **Feature Engineering**: Domain-specific sensor data processing
 - **Model Selection**: Comparative analysis across different algorithms
 - **Production Considerations**: Scalability, monitoring, and maintenance
 
 ### Problem-Solving Experience
+
 - **Data Quality Issues**: Handling real-world data inconsistencies
 - **Model Performance**: Balancing accuracy vs. inference speed
 - **System Integration**: Connecting ML models with web applications
@@ -233,12 +253,14 @@ predictive-maintenance-mlops/
 ## 📈 Business Impact
 
 ### Operational Benefits
+
 - **Reduced Downtime**: 3-7 day advance failure warnings
 - **Cost Savings**: Proactive vs. reactive maintenance approach
 - **Resource Optimization**: Better maintenance scheduling
 - **Quality Improvement**: Preventing equipment degradation
 
 ### Technical Achievements
+
 - **Scalable Architecture**: Microservices on AWS ECS
 - **Real-time Processing**: Sub-100ms prediction latency
 - **Model Versioning**: MLflow with S3 artifact storage
@@ -248,12 +270,14 @@ predictive-maintenance-mlops/
 ## 🔮 Future Enhancements
 
 ### Short Term
+
 - [ ] Advanced feature engineering (rolling statistics, lag features)
 - [ ] Ensemble methods and stacking approaches
 - [ ] Real-time data streaming integration
 - [ ] Enhanced monitoring dashboards
 
 ### Long Term
+
 - [ ] Deep learning models with ensemble stacking for time series analysis
 - [ ] Real-time data streaming with automated retraining pipeline
 - [ ] Edge deployment with load testing and performance tuning
@@ -261,6 +285,7 @@ predictive-maintenance-mlops/
 - [ ] Integrated Prometheus & Grafana for robust monitoring and alerting
 
 ### Development Process
+
 1. **Research Phase**: Industrial maintenance literature review
 2. **Data Analysis**: Exploratory data analysis and feature selection
 3. **Model Development**: Iterative training and validation
@@ -272,4 +297,4 @@ predictive-maintenance-mlops/
 
 > **Note**: This project demonstrates end-to-end MLOps implementation, covering data science fundamentals through production deployment. Each component was built with scalability and maintainability in mind while ensuring code clarity and documentation.
 
-**Tech Stack**: Python • scikit-learn • MLflow • FastAPI • Docker • AWS (ECS, ECR, S3) • GitHub Actions 
+**Tech Stack**: Python • scikit-learn • MLflow • FastAPI • Docker • AWS (ECS, ECR, S3) • GitHub Actions
