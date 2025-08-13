@@ -173,35 +173,30 @@ async def health_check():
         }
         
         # Check if artifacts exist
+        # For prediction, only the model and preprocessor are essential.
         artifacts = {
             "model": "artifacts/model.pkl",
-            "preprocessor": "artifacts/preprocessor.pkl",
-            "train_data": "artifacts/train.csv",
-            "test_data": "artifacts/test.csv",
-            "raw_data": "artifacts/data.csv"
+            "preprocessor": "artifacts/preprocessor.pkl"
         }
         
         all_healthy = True
         for name, path in artifacts.items():
             exists = os.path.exists(path)
-            size = os.path.getsize(path) if exists else 0
             health_status["components"][name] = {
                 "exists": exists,
-                "size_bytes": size,
-                "path": path
+                "path": path,
+                "status": "OK" if exists else "MISSING"
             }
             if not exists:
                 all_healthy = False
         
-        # Check pipeline initialization
-        pipeline_status = predict_pipeline is not None
+        # With dependency injection, the pipeline is loaded on-demand per request.
+        # The health check confirms that the necessary artifacts are present,
+        # making the application ready to attempt loading the pipeline.
         health_status["components"]["prediction_pipeline"] = {
-            "initialized": pipeline_status,
-            "ready": pipeline_status
+            "status": "Ready to load on request" if all_healthy else "Not ready, critical artifacts missing",
+            "ready": all_healthy
         }
-        
-        if not pipeline_status:
-            all_healthy = False
         
         health_status["status"] = "healthy" if all_healthy else "degraded"
         

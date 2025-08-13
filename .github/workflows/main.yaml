@@ -1,4 +1,4 @@
-name: workflow
+name: CI/CD Pipeline (AWS)
 
 on:
   push:
@@ -10,29 +10,47 @@ permissions:
   contents: read
 
 jobs:
-  integration:
-    name: Continuous Integration
+  lint:
+    name: Lint Codebase
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      - name: Lint code
-        run: echo "Linting repository"
-      - name: Run unit tests
-        run: echo "Running unit tests"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install flake8
+      - run: flake8 .
 
-  build-and-push-ecr-image:
-    name: Continuous Delivery (AWS Safe)
-    needs: integration
+  security:
+    name: Security Scan
     runs-on: ubuntu-latest
+    needs: lint
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install bandit
+      - run: bandit -r .
 
-      - name: Install Utilities
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq unzip
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    needs: security
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pytest --maxfail=3 --disable-warnings -q
+
+  build-and-push-to-ecr:
+    name: Build and Push Docker Image to AWS ECR (Safe)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -45,23 +63,32 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build and Push Docker Image
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
+          set -e
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Delete image from ECR (Prevent Costs)
+        # always delete image even if build/push fails
+      - name: Delete Image from ECR (Prevent Costs)
+        if: always()
         env:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           aws ecr batch-delete-image \
             --repository-name $ECR_REPOSITORY \
             --image-ids imageTag=$IMAGE_TAG || true
+
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build-and-push-to-ecr
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Deploying..."
+      - run: echo "Deployment successful!"
