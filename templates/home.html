@@ -7,7 +7,7 @@
     <title>Predictive Maintenance Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 </head>
 
 <body class="prediction-page">
@@ -150,32 +150,32 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="Tool_wear_min" class="form-label">
+                                    <label for="Tool_wear" class="form-label">
                                         <i class="fas fa-wrench me-1"></i>Tool Wear (minutes)
                                     </label>
-                                    <input type="number" class="form-control form-control-modern" id="Tool_wear_min"
-                                        name="Tool_wear_min" placeholder="0-300" min="0" max="300" required>
+                                    <input type="number" class="form-control form-control-modern" id="Tool_wear"
+                                        name="Tool_wear" placeholder="0-300" min="0" max="300" required>
                                     <div class="form-hint">Total tool usage time in minutes</div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="Air_temperature_K" class="form-label">
+                                    <label for="Air_temperature" class="form-label">
                                         <i class="fas fa-thermometer-half me-1"></i>Air Temperature (K)
                                     </label>
-                                    <input type="number" class="form-control form-control-modern" id="Air_temperature_K"
-                                        name="Air_temperature_K" placeholder="295-305" step="0.1" min="250" max="350"
+                                    <input type="number" class="form-control form-control-modern" id="Air_temperature"
+                                        name="Air_temperature" placeholder="295-305" step="0.1" min="250" max="350"
                                         required>
                                     <div class="form-hint">Ambient temperature in Kelvin</div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="Process_temperature_K" class="form-label">
+                                    <label for="Process_temperature" class="form-label">
                                         <i class="fas fa-fire me-1"></i>Process Temperature (K)
                                     </label>
                                     <input type="number" class="form-control form-control-modern"
-                                        id="Process_temperature_K" name="Process_temperature_K" placeholder="305-315"
+                                        id="Process_temperature" name="Process_temperature" placeholder="305-315"
                                         step="0.1" min="280" max="380" required>
                                     <div class="form-hint">Operating temperature in Kelvin</div>
                                 </div>
@@ -183,21 +183,21 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="Rotational_speed_rpm" class="form-label">
+                                    <label for="Rotational_speed" class="form-label">
                                         <i class="fas fa-sync-alt me-1"></i>Rotational Speed (RPM)
                                     </label>
-                                    <input type="number" class="form-control form-control-modern"
-                                        id="Rotational_speed_rpm" name="Rotational_speed_rpm" placeholder="1200-2800"
+                                    <input type="number" class="form-control form-control-modern" id="Rotational_speed"
+                                        name="Rotational_speed" placeholder="1200-2800"
                                         min="1000" max="3000" required>
                                     <div class="form-hint">Motor speed in revolutions per minute</div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="Torque_Nm" class="form-label">
+                                    <label for="Torque" class="form-label">
                                         <i class="fas fa-cog me-1"></i>Torque (Nm)
                                     </label>
-                                    <input type="number" class="form-control form-control-modern" id="Torque_Nm"
-                                        name="Torque_Nm" placeholder="10-80" step="0.1" min="0" max="100" required>
+                                    <input type="number" class="form-control form-control-modern" id="Torque"
+                                        name="Torque" placeholder="10-80" step="0.1" min="0" max="100" required>
                                     <div class="form-hint">Applied torque in Newton-meters</div>
                                 </div>
                             </div>
@@ -226,11 +226,11 @@
         // Sample data for testing
         function fillSampleData() {
             document.getElementById('Type').value = 'M';
-            document.getElementById('Air_temperature_K').value = '298.1';
-            document.getElementById('Process_temperature_K').value = '308.6';
-            document.getElementById('Rotational_speed_rpm').value = '1551';
-            document.getElementById('Torque_Nm').value = '42.8';
-            document.getElementById('Tool_wear_min').value = '0';
+            document.getElementById('Air_temperature').value = '298.1';
+            document.getElementById('Process_temperature').value = '308.6';
+            document.getElementById('Rotational_speed').value = '1551';
+            document.getElementById('Torque').value = '42.8';
+            document.getElementById('Tool_wear').value = '0';
         }
 
         // Form submission with loading state

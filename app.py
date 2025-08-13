@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -24,19 +24,19 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Initialize prediction pipeline globally
-predict_pipeline = None
-
-def initialize_pipeline():
-    """Initialize prediction pipeline with error handling"""
-    global predict_pipeline
+# --- Dependency Injection for the Prediction Pipeline ---
+def get_pipeline() -> PredictPipeline:
+    """
+    Dependency function to create and return a PredictPipeline instance.
+    This avoids global variables and makes the app more robust and testable.
+    """
     try:
-        predict_pipeline = PredictPipeline()
-        logging.info("Prediction pipeline initialized successfully")
-        return True
+        pipeline = PredictPipeline()
+        logging.info("Prediction pipeline dependency loaded successfully.")
+        return pipeline
     except Exception as e:
-        logging.error(f"Failed to initialize prediction pipeline: {str(e)}")
-        return False
+        logging.error(f"Failed to load prediction pipeline dependency: {str(e)}")
+        raise HTTPException(status_code=503, detail="Prediction system is not available. Please check server logs.")
 
 # Pydantic models for API
 class PredictionRequest(BaseModel):
@@ -56,15 +56,15 @@ class PredictionResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize pipeline on startup"""
+    """Check for model artifacts on startup to fail fast."""
     logging.info("Starting FastAPI application...")
-    
-    # Check if training is needed
+
+    # Check if model artifacts exist. If not, the app cannot function.
     if not os.path.exists("artifacts/model.pkl"):
-        logging.warning("Model artifacts not found. Please run training first:")
-        logging.warning("python run_pipeline.py --mode train")
-    else:
-        initialize_pipeline()
+        error_msg = "FATAL: Model artifacts not found. The application cannot start."
+        logging.error(error_msg)
+        raise RuntimeError(error_msg)
+    logging.info("Model artifacts found. Application is ready to serve requests.")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -79,32 +79,25 @@ async def predict_form(request: Request):
 @app.post("/predictdata", response_class=HTMLResponse)
 async def predict_datapoint(
     request: Request,
+    pipeline: PredictPipeline = Depends(get_pipeline),
     Type: str = Form(...),
-    Air_temperature_K: float = Form(...),
-    Process_temperature_K: float = Form(...),
-    Rotational_speed_rpm: int = Form(...),
-    Torque_Nm: float = Form(...),
-    Tool_wear_min: int = Form(...)
+    Air_temperature: float = Form(...),
+    Process_temperature: float = Form(...),
+    Rotational_speed: int = Form(...),
+    Torque: float = Form(...),
+    Tool_wear: int = Form(...)
 ):
     """Main prediction endpoint for web form"""
     try:
-        # Initialize pipeline if not already done
-        if predict_pipeline is None:
-            if not initialize_pipeline():
-                return templates.TemplateResponse("home.html", {
-                    "request": request,
-                    "results": "❌ ERROR: Prediction system not available. Please ensure models are trained."
-                })
-
         # Create CustomData object
         try:
             data = CustomData(
                 Type=Type,
-                Air_temperature=Air_temperature_K,
-                Process_temperature=Process_temperature_K,
-                Rotational_speed=Rotational_speed_rpm,
-                Torque=Torque_Nm,
-                Tool_wear=Tool_wear_min
+                Air_temperature=Air_temperature,
+                Process_temperature=Process_temperature,
+                Rotational_speed=Rotational_speed,
+                Torque=Torque,
+                Tool_wear=Tool_wear
             )
         except (ValueError, TypeError) as e:
             return templates.TemplateResponse("home.html", {
@@ -118,7 +111,7 @@ async def predict_datapoint(
 
         # Make prediction
         logging.info("Starting prediction")
-        results, confidence = predict_pipeline.predict(pred_df)
+        results, confidence = pipeline.predict(pred_df)
         
         # Log successful prediction
         logging.info(f"Prediction completed: {results[0]}, Confidence: {confidence}")
@@ -219,16 +212,12 @@ async def health_check():
         raise HTTPException(status_code=500, detail=f"Health check failed: {str(e)}")
 
 @app.post("/api/predict", response_model=PredictionResponse)
-async def api_predict(request: PredictionRequest):
+async def api_predict(
+    request: PredictionRequest,
+    pipeline: PredictPipeline = Depends(get_pipeline)
+):
     """REST API endpoint for predictions"""
     try:
-        if predict_pipeline is None:
-            if not initialize_pipeline():
-                raise HTTPException(
-                    status_code=503, 
-                    detail="Prediction system not available. Models not trained or artifacts missing."
-                )
-
         # Create CustomData object
         data = CustomData(
             Type=request.Type,
@@ -241,7 +230,7 @@ async def api_predict(request: PredictionRequest):
         
         # Make prediction
         pred_df = data.get_data_as_data_frame()
-        results, confidence = predict_pipeline.predict(pred_df)
+        results, confidence = pipeline.predict(pred_df)
         
         # Return response
         return PredictionResponse(
@@ -265,11 +254,11 @@ if __name__ == "__main__":
     import uvicorn
     
     # Get port from environment or default to 8080
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8090))
     
     print("🚀 Starting Predictive Maintenance FastAPI Application")
     print(f"🌐 Access at: http://localhost:{port}")
     print(f"📋 API Docs at: http://localhost:{port}/docs")
     print(f"🔍 Health Check at: http://localhost:{port}/health")
     
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="127.0.0.1", port=port)

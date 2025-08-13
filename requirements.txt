@@ -6,7 +6,7 @@ matplotlib==3.7.1
 seaborn==0.12.2
 
 # Web framework - FastAPI
-fastapi==0.103.1
+fastapi==0.103.1    
 uvicorn[standard]==0.23.2
 jinja2==3.1.2
 python-multipart==0.0.6
@@ -28,5 +28,5 @@ flake8==6.0.0
 # AWS SDK (for future deployment)
 boto3==1.28.25
 
-# Package installation
--e .
+# # Package installation
+# -e .

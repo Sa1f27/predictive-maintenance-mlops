@@ -1,6 +1,11 @@
 # src/components/data_ingestion.py - NO FALLBACKS VERSION
 import sys
 import os
+
+# Add the project root directory to the Python path.
+# This allows the script to be run directly for testing, resolving the 'src' module not found error.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 from src.logger import logging
 from src.exception import CustomException
 from dataclasses import dataclass
