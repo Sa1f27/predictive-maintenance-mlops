@@ -132,7 +132,8 @@ aws ecs update-service --cluster mlops-cluster --service maintenance-service --f
 
 ![Capture6](https://github.com/user-attachments/assets/6bc82e51-f6ae-40f0-b5e4-0aeee2da48ce)
 
-![cicd-ithub-actions](https://github.com/user-attachments/assets/5441b56f-bbf5-4475-b994-73d7f2cc0458)
+<img width="1878" height="693" alt="Screenshot 2025-08-15 120611" src="https://github.com/user-attachments/assets/afe3a0b4-9599-4a5a-8eb8-fd2dac558420" />
+
 
 ## 📈 Model Performance
 
