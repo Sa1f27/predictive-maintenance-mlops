@@ -1,7 +1,8 @@
 
+
 # 🔧 Predictive Maintenance System with MLOps Pipeline
 
-> **Industrial Analytics** • **Machine Learning** • **MLOps** • **Production Deployment**
+> **Industrial IoT Analytics** • **Machine Learning** • **MLOps** • **Production Deployment**
 
 A full-stack ML system that **predicts equipment failures before they occur**, built with **end-to-end MLOps practices**: experiment tracking, model versioning, containerized deployment, CI/CD automation, and cloud production readiness.
 
@@ -11,7 +12,7 @@ A full-stack ML system that **predicts equipment failures before they occur**, b
 
 * **91% peak accuracy** across multiple equipment types
 * **<100ms prediction latency** for real-time inference
-* **End-to-end pipeline**: ingestion → preprocessing → model training → API serving → containerized deployment
+* **End-to-end pipeline**: data ingestion → preprocessing → model training → API serving → containerized deployment
 * **Production-ready** FastAPI service with health checks, structured logging, and Pydantic validation
 * **Automated CI/CD** with GitHub Actions for Docker build, ECR push, and ECS deployment
 * **Scalable, cloud-ready** architecture using AWS ECR + ECS
@@ -49,6 +50,22 @@ Data → ETL → Model Training (MLflow) → Model Registry → API (FastAPI)
 * Fully **containerized ML service** for consistency across dev, staging, and prod
 * Automated **CI/CD pipeline** ensures code & model changes are instantly deployed
 * Cloud-ready deployment enables **horizontal scaling and high availability**
+
+---
+
+## 📸 Screenshots
+
+![Capture](https://github.com/user-attachments/assets/b5ea1ab5-03d2-44e6-8820-187a19caeaef)
+
+![Capture1](https://github.com/user-attachments/assets/f26830f7-deff-475a-bfeb-f62a10ef6608)
+
+![Capture3](https://github.com/user-attachments/assets/31c9f394-42b5-43dd-a88c-2dd433af423d)
+
+![Capture4](https://github.com/user-attachments/assets/d0772238-2de6-4264-ac18-958c9dec3bc4)
+
+![Capture5](https://github.com/user-attachments/assets/9dbe47c1-21b9-4ef9-8144-6cafc4130858)
+
+![Capture6](https://github.com/user-attachments/assets/6bc82e51-f6ae-40f0-b5e4-0aeee2da48ce) <img width="1878" height="693" alt="Screenshot 2025-08-15 120611" src="https://github.com/user-attachments/assets/afe3a0b4-9599-4a5a-8eb8-fd2dac558420" />
 
 ---
 
@@ -111,6 +128,6 @@ docker-compose up -d --build
 
 * **Advanced feature engineering:** rolling statistics, lag features
 * **Ensemble/stacking models** for higher accuracy
-* **Real-time streaming data** with automated retraining
+* **Real-time data** with automated retraining
 * **Monitoring & observability:** Prometheus/Grafana dashboards, alerting
 * **Multi-region deployment** for global industrial clients
