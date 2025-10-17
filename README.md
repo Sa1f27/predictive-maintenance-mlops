@@ -4,6 +4,13 @@
 
 > **Industrial IoT Analytics** • **Machine Learning** • **MLOps** • **Production Deployment**
 
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python) 
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-green?logo=fastapi) 
+![Docker](https://img.shields.io/badge/Docker-24.0-blue?logo=docker) 
+![AWS](https://img.shields.io/badge/AWS-ECS-orange?logo=amazon-aws) 
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2.5-blue?logo=githubactions)
+
+
 A full-stack ML system that **predicts equipment failures before they occur**, built with **end-to-end MLOps practices**: experiment tracking, model versioning, containerized deployment, CI/CD automation, and cloud production readiness.
 
 ---
